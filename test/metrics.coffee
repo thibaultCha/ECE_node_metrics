@@ -11,7 +11,6 @@ describe 'metrics', ->
 			next()
 
 	it 'should get a metric', (next) ->
-
 		met = [
 			timestamp:(new Date '2013-11-04 14:00 UTC').getTime(), value:1234
 		,
@@ -30,7 +29,6 @@ describe 'metrics', ->
 				next()
 
 	it 'should remove a metric', (next) ->
-
 		met = [
 			timestamp:(new Date '2013-12-04 15:00 UTC').getTime(), value:123
 		,

@@ -18,8 +18,12 @@ app.get '/metrics/:id.json', (req, res) ->
 			id: req.params.id
 			metrics: metrics
 
-app.post '/metrics/:id', (req, res) ->
-	res.send 200
+app.post '/metrics/:id.json', (req, res) ->
+	metrics.save req.params.id, req.body.metrics, (err) ->
+		return next err if err
+		res.json
+			id: req.params.id
+			metrics: req.body.metrics
 
 app.listen 8888, ->
 	console.log 'Application listening on 8888'

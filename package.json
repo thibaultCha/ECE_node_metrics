@@ -10,6 +10,7 @@
 	"devDependencies": {
 		"mocha": "*",
 		"should": "*",
-		"coffee-script": "*"		
+		"coffee-script": "*",
+		"request": "*"	
 	}
 }

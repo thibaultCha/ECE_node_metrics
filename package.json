@@ -2,6 +2,8 @@
 	"name": "ece-metrics",
 	"version": "0.0.0",
 	"dependencies": {
+		"express": "*",
+		"stylus": "*",
 		"levelup": "*",
 		"leveldown": "*"
 	},

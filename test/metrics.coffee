@@ -44,3 +44,8 @@ describe 'metrics', ->
 				metrics.get 2, (err, metrics) ->
 					metrics.length.should.equal(0)
 					next()
+
+	after (next) ->
+		exec "rm -rf #{__dirname}/../db/test && mkdir #{__dirname}/../db/test", (err, stdout) ->
+			throw err if err
+			next()

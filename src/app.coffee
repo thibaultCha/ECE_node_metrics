@@ -19,6 +19,7 @@ app.get '/metrics/:id.json', (req, res) ->
 			metrics: metrics
 
 app.post '/metrics/:id.json', (req, res) ->
+	console.log req.params.id
 	metrics.save req.params.id, req.body.metrics, (err) ->
 		return next err if err
 		res.json

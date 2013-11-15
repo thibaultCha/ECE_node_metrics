@@ -9,7 +9,10 @@ module.exports =
 		  stop:"metric:#{id}:"
 		rs.on 'data', (data) ->
 			[_, id, timestamp] = data.key.split ':'
-			metrics.push id: id, timestamp: parseInt(timestamp, 10), value: parseInt(data.value)
+			metrics.push 
+				id: parseInt(id), 
+				timestamp: parseInt(timestamp, 10), 
+				value: parseInt(data.value)
 		rs.on 'error', (err) ->
 			return callback err if err
 		rs.on 'close', ->

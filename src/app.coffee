@@ -19,12 +19,21 @@ app.get '/metrics/:id.json', (req, res) ->
 			metrics: metrics
 
 app.post '/metrics/:id.json', (req, res) ->
-	console.log req.params.id
 	metrics.save req.params.id, req.body.metrics, (err) ->
 		return next err if err
-		res.json
-			id: req.params.id
-			metrics: req.body.metrics
+		metrics.get req.params.id, (err, metrics) ->
+			return next err if err
+			res.json
+				id: req.params.id
+				metrics: metrics
+
+app.delete '/metrics/:id.json', (req, res) ->
+	metrics.delete req.params.id, (err) ->
+		return next err if err
+		res.send 200
+
+app.all '*', (req, res) ->
+	res.send 405
 
 app.listen 8888, ->
 	console.log 'Application listening on 8888'

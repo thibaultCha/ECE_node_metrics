@@ -1,5 +1,6 @@
 express = require 'express'
 stylus  = require 'stylus'
+config  = require '../config'
 app     = express()
 
 metrics = require './metrics'
@@ -35,5 +36,5 @@ app.delete '/metrics/:id.json', (req, res) ->
 app.all '*', (req, res) ->
 	res.send 405
 
-app.listen 8888, ->
-	console.log 'Application listening on 8888'
+app.listen config.PORT, ->
+	console.log 'Application listening on ' + config.PORT

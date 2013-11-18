@@ -1,0 +1,33 @@
+stocker users in leveldb, sign-in system
+
+#now
+
+metric:$id:$timestamp
+
+#todo
+
+user:$username = user informations
+
+user_metrics:$username:$id
+
+
+from "metric:#{id}"
+from "user_metric:#{thibault}:#{id}"
+
+
+
+
+
+
+
+projet zip avec nom en dossier
+
+leveldb maintenir la session (redisStore)
+
+leveldb stiore
+
+app.use express.session
+  secret:
+   store:
+     port:
+     host:

@@ -1,4 +1,4 @@
-db = require('./db') "#{__dirname}/../db/test"
+db = require('./db') "#{__dirname}/../db/metrics"
 
 module.exports =
 	get: (id, options, callback) ->
@@ -22,7 +22,7 @@ module.exports =
 		ws = db.createWriteStream()
 		for metric in metrics
 			{timestamp, value} = metric
-			ws.write key: "metric:#{id}:#{timestamp}", value: value
+			ws.write key:"metric:#{id}:#{timestamp}", value: value
 		ws.on 'error', (err) ->
 			return callback err if err
 		ws.on 'close', ->

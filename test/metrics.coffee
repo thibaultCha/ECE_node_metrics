@@ -5,7 +5,7 @@ describe 'metrics', ->
 	metrics = null
 
 	before (next) ->
-		exec "rm -rf #{__dirname}/../db/test && mkdir #{__dirname}/../db/test", (err, stdout) ->
+		exec "rm -rf #{__dirname}/../db/metrics && mkdir #{__dirname}/../db/metrics", (err, stdout) ->
 			throw err if err
 			metrics = require '../lib/metrics'
 			next()
@@ -56,6 +56,6 @@ describe 'metrics', ->
 					next()
 
 	after (next) ->
-		exec "rm -rf #{__dirname}/../db/test", (err, stdout) ->
+		exec "rm -rf #{__dirname}/../db/metrics", (err, stdout) ->
 			throw err if err
 			next()

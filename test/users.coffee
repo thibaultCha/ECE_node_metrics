@@ -47,68 +47,6 @@ describe 'users', ->
 						(user == null).should.be.true
 						next()
 
-	describe 'addMetrics()', ->
-		it 'should add an existing metric to an existing user', (next) ->
-			user =
-				email: "add@domain.com"
-
-			met = [
-				timestamp:(new Date '2013-11-04 14:00 UTC').getTime(), value:1234
-			,
-				timestamp:(new Date '2013-11-04 14:10 UTC').getTime(), value:5678
-			]
-
-			metrics.save 3, met, (err) ->
-				throw err if err
-				users.save user, (err) ->
-					throw err if err
-					users.addMetrics user, 3, (err) ->
-						throw err if err	
-						next()
-						#users.getMetrics user, (err, user_metrics) ->
-						#	next err if err
-						#	user_metrics.should.be.an.instanceOf(Array)
-						#	user_metrics[0].timestamp.should.equal met[0].timestamp
-						#	user_metrics[1].timestamp.should.equal met[1].timestamp
-						#	next()
-		it 'should return an error if user does not exist', (next) ->
-			user =
-				email: "wrong@domain.com"
-
-			users.addMetrics user, 0, (err) ->
-				err.should.not.be.null
-				next()
-
-		it 'should return an error if metric_id does not exist', (next) ->
-			user =
-				email: "name@domain.com"
-
-			users.save user, (err) ->
-				throw err if err
-				users.addMetrics user, 9999, (err) ->
-					err.should.not.be.null
-					next()
-
-	describe 'getMetrics()', ->
-		it.skip 'should return an empty array if no metrics for id', (next) ->
-			user = 
-				email: "get@domain.com"
-
-			users.save user, (err) ->
-				next err if err
-				users.getMetrics user, (err, user_metrics) ->
-					next err if err
-					user_metrics.should.be.an.instanceOf(Array)
-					user_metrics.length.should.equal 0
-					next()
-		it 'should return an error if user does not exist', (next) ->
-			user =
-				email: "wrong@domain.com"
-
-			users.getMetrics user, (err) ->
-				err.should.not.be.null
-				next()
-
 	after (next) ->
 		exec "rm -rf #{__dirname}/../db/users", (err, stdout) ->
 			next err if err

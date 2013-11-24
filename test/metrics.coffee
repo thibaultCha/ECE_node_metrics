@@ -20,9 +20,9 @@ describe 'metrics', ->
 		]
 
 		metrics.save 1, met, (err) ->
-			throw err if err
+			return next err if err
 			metrics.get 1, (err, metrics) ->
-				throw err if err
+				return next err if err
 				metrics.length.should.equal 3
 				[m1, m2, m3] = metrics
 				
@@ -37,6 +37,13 @@ describe 'metrics', ->
 				m2.timestamp.should.equal m1.timestamp + 10*60*1000
 				
 				next()
+
+	it 'should return an empty array if no metrics for id', (next) ->
+		metrics.get 9999, (err, metrics) ->
+			return next err if err
+			metrics.should.be.an.instanceOf(Array)
+			metrics.length.should.not.be.above 0
+			next()
 
 	it 'should delete a metric', (next) ->
 		met = [

@@ -6,7 +6,8 @@
 		"jade": "*",
 		"stylus": "*",
 		"levelup": "*",
-		"leveldown": "*"
+		"leveldown": "*",
+		"bcrypt": "*"
 	},
 	"devDependencies": {
 		"mocha": "*",

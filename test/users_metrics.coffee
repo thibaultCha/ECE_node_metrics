@@ -8,7 +8,7 @@ describe 'users_metrics', ->
 
 	before (next) ->
 		exec "rm -rf #{__dirname}/../db/users-metrics && mkdir #{__dirname}/../db/users-metrics", (err, stdout) ->
-			throw err if err
+			return next err if err
 			users = require '../lib/users'
 			metrics = require '../lib/metrics'
 			uMetrics = require '../lib/users_metrics'
@@ -27,13 +27,13 @@ describe 'users_metrics', ->
 			]
 
 			metrics.save 3, met, (err) ->
-				next err if err
+				return next err if err
 				users.save user, (err) ->
-					next err if err
+					return next err if err
 					uMetrics.addMetrics user, 3, (err) ->
-						next err if err	
+						return next err if err	
 						uMetrics.getMetrics user, (err, user_metrics) ->
-							next err if err
+							return next err if err
 							user_metrics.should.be.an.instanceOf(Array)
 							user_metrics.length.should.be.equal 1
 							user_metrics[0].id.should.equal 3
@@ -43,7 +43,7 @@ describe 'users_metrics', ->
 
 		it 'should return an error if user does not exist', (next) ->
 			user =
-				email: "wrong@domain.com"
+				email: "addwrong@domain.com"
 
 			uMetrics.addMetrics user, 0, (err) ->
 				err.should.not.be.null
@@ -51,10 +51,10 @@ describe 'users_metrics', ->
 
 		it 'should return an error if metric_id does not exist', (next) ->
 			user =
-				email: "name@domain.com"
+				email: "adderror@domain.com"
 
 			users.save user, (err) ->
-				next err if err
+				return next err if err
 				uMetrics.addMetrics user, 9999, (err) ->
 					err.should.not.be.null
 					next()
@@ -66,16 +66,16 @@ describe 'users_metrics', ->
 				email: "get@domain.com"
 
 			users.save user, (err) ->
-				next err if err
+				return next err if err
 				uMetrics.getMetrics user, (err, user_metrics) ->
-					next err if err
+					return next err if err
 					user_metrics.should.be.an.instanceOf(Array)
 					user_metrics.length.should.equal 0
 					next()
 
 		it 'should return an error if user does not exist', (next) ->
 			user =
-				email: "wrong@domain.com"
+				email: "getwrong@domain.com"
 
 			uMetrics.getMetrics user, (err) ->
 				err.should.not.be.null
@@ -85,7 +85,7 @@ describe 'users_metrics', ->
 
 		it 'should return an error if user does not exist', (next) ->
 			user =
-				email: "wrong@domain.com"
+				email: "removewrong@domain.com"
 
 			uMetrics.removeMetrics user, 1, (err) ->
 				err.should.not.be.null
@@ -93,10 +93,10 @@ describe 'users_metrics', ->
 
 		it 'should return an error if trying to remove a metrics not attached to user', (next) ->
 			user =
-				email: "name@domain.com"
+				email: "removeerror@domain.com"
 
 			users.save user, (err) ->
-				next err if err
+				return next err if err
 				uMetrics.removeMetrics user, 9999, (err) ->
 					err.should.not.be.null
 					next()
@@ -112,24 +112,24 @@ describe 'users_metrics', ->
 			]
 
 			users.save user, (err) ->
-				next err if err
+				return next err if err
 				metrics.save 1, met, (err) ->
-					next err if err
+					return next err if err
 					uMetrics.addMetrics user, 1, (err) ->
-						next err if err
+						return next err if err
 						uMetrics.getMetrics user, (err, user_metrics) ->
-							next err if err
+							return next err if err
 							user_metrics.should.be.an.instanceOf(Array)
 							user_metrics.length.should.equal 1
 							user_metrics[0].metrics[0].value.should.equal 1234
 							uMetrics.removeMetrics user, 1, (err) ->
-								next err if err
+								return next err if err
 								uMetrics.getMetrics user, (err, final_metrics) ->
-									next err if err
+									return next err if err
 									final_metrics.length.should.be.equal 0
 									next()
 
 	after (next) ->
 		exec "rm -rf #{__dirname}/../db/users-metrics", (err, stdout) ->
-			next err if err
+			return next err if err
 			next()

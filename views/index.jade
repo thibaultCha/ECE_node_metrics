@@ -4,26 +4,33 @@ block content
 
   :stylus
     content-width = 960px
+    graph-width = 800px
+    background-color = #ccc
+    .container
+      width content-width
+      margin 0 auto
     #form
-      width content-width
+      width graph-width
       margin 0 auto
+      padding 20px 0
       margin-bottom 50px
+      background-color background-color
+      h1
+        text-align center
     #graph
-      position relative
-      width content-width
-      height 500px
+      width graph-width
+      height 400px 
       margin 0 auto
-      background #ccc
-
+      background-color background-color
     line path
       fill none
       stroke #000
       shape-rendering crispEdges
-
     .area
       fill steelblue
 
   form#form(action="/metrics" method="GET")
+    h1= title
     label(for="id") Metric id
     input#metric_id(name="metric" placeholder="metric id")
     br
@@ -36,13 +43,11 @@ block content
       id = $('#metric_id').val()
       e.preventDefault()
       $.getJSON "/metrics/#{id}.json", {}, (data) ->
-        console.log data.metrics
-        
         metrics = data.metrics
 
         margin = {top: 20, right: 20, bottom: 30, left: 50}
-        width  = 960 - margin.left - margin.right
-        height = 500 - margin.top - margin.bottom
+        width  = 800 - margin.left - margin.right
+        height = 400 - margin.top - margin.bottom
 
         x = d3.time.scale().range [0, width]
         y = d3.scale.linear().range [height, 0]
@@ -77,6 +82,8 @@ block content
             .attr("transform", "translate(0, " + height + ")")
             .call(xAxis)
             .append("text")
+              .attr("x", -4)
+              .attr("dx", "1em")
               .text("Time")
 
         svg.append("g")
@@ -84,5 +91,7 @@ block content
             .call(yAxis)
             .append("text")
               .attr("transform", "rotate(-90)")
+              .attr("y", 6)
+              .attr("dy", ".71em")
               .style("text-anchor", "end")
               .text("Value")

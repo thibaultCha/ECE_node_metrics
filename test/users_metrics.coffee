@@ -27,11 +27,11 @@ describe 'users_metrics', ->
 			]
 
 			metrics.save 3, met, (err) ->
-				throw err if err
+				next err if err
 				users.save user, (err) ->
-					throw err if err
+					next err if err
 					uMetrics.addMetrics user, 3, (err) ->
-						throw err if err	
+						next err if err	
 						uMetrics.getMetrics user, (err, user_metrics) ->
 							next err if err
 							user_metrics.should.be.an.instanceOf(Array)
@@ -54,7 +54,7 @@ describe 'users_metrics', ->
 				email: "name@domain.com"
 
 			users.save user, (err) ->
-				throw err if err
+				next err if err
 				uMetrics.addMetrics user, 9999, (err) ->
 					err.should.not.be.null
 					next()
@@ -90,6 +90,44 @@ describe 'users_metrics', ->
 			uMetrics.removeMetrics user, 1, (err) ->
 				err.should.not.be.null
 				next()
+
+		it 'should return an error if trying to remove a metrics not attached to user', (next) ->
+			user =
+				email: "name@domain.com"
+
+			users.save user, (err) ->
+				next err if err
+				uMetrics.removeMetrics user, 9999, (err) ->
+					err.should.not.be.null
+					next()
+
+		it 'should remove attached metric to existing user', (next) ->
+			user =
+				email: "remove@domain.com"
+
+			met = [
+				timestamp:(new Date '2013-11-04 14:00 UTC').getTime(), value:1234
+			,
+				timestamp:(new Date '2013-11-04 14:10 UTC').getTime(), value:5678
+			]
+
+			users.save user, (err) ->
+				next err if err
+				metrics.save 1, met, (err) ->
+					next err if err
+					uMetrics.addMetrics user, 1, (err) ->
+						next err if err
+						uMetrics.getMetrics user, (err, user_metrics) ->
+							next err if err
+							user_metrics.should.be.an.instanceOf(Array)
+							user_metrics.length.should.equal 1
+							user_metrics[0].metrics[0].value.should.equal 1234
+							uMetrics.removeMetrics user, 1, (err) ->
+								next err if err
+								uMetrics.getMetrics user, (err, final_metrics) ->
+									next err if err
+									final_metrics.length.should.be.equal 0
+									next()
 
 	after (next) ->
 		exec "rm -rf #{__dirname}/../db/users-metrics", (err, stdout) ->

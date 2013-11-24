@@ -54,10 +54,20 @@ module.exports =
 				callback new Error "No matching user for email: #{user.email}"
 
 	removeMetrics: (user, metric_id, callback) ->
-		users.get user.email, (err, fetched_user) ->
+		@getMetrics user, (err, metrics) ->
 			return callback err if err
-			if fetched_user isnt null
-				
+			if metrics.length > 0
+				rs = db.createReadStream
+					start:"user_metric:#{user.email}:"
+					stop:"user_metric:#{user.email}:"
+				rs.on 'data', (data) ->
+					db.del data.key, (err) ->
+						return callback err if err
+				rs.on 'error', (err) ->
+					return callback err if err
+				rs.on 'close', ->
+					callback()
 			else
-				callback new Error "No matching user for email: #{user.email}"
+				callback new Error "User #{user.email} does not have metrics: #{metric_id}"
+
 

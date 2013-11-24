@@ -81,6 +81,16 @@ describe 'users_metrics', ->
 				err.should.not.be.null
 				next()
 
+	describe 'removeMetrics()', ->
+
+		it 'should return an error if user does not exist', (next) ->
+			user =
+				email: "wrong@domain.com"
+
+			uMetrics.removeMetrics user, 1, (err) ->
+				err.should.not.be.null
+				next()
+
 	after (next) ->
 		exec "rm -rf #{__dirname}/../db/users-metrics", (err, stdout) ->
 			next err if err

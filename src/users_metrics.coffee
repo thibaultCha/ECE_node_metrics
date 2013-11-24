@@ -20,9 +20,9 @@ module.exports =
 						ws.on 'close', ->
 							callback null
 					else
-						return callback new Error 'No metrics with id: ' + metric_id
+						return callback new Error "No metrics with id:  #{metric_id}"
 			else
-				callback new Error 'No matching user for email: ' + user.email
+				callback new Error "No matching user for email: #{user.email}"
 
 	getMetrics: (user, callback) ->
 		users.get user.email, (err, fetched_user) ->
@@ -51,4 +51,13 @@ module.exports =
 					else
 						callback null, user_metrics
 			else
-				callback new Error 'No matching user for email: ' + user.email
+				callback new Error "No matching user for email: #{user.email}"
+
+	removeMetrics: (user, metric_id, callback) ->
+		users.get user.email, (err, fetched_user) ->
+			return callback err if err
+			if fetched_user isnt null
+				
+			else
+				callback new Error "No matching user for email: #{user.email}"
+

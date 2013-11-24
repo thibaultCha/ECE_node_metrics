@@ -1,7 +1,7 @@
 {exec} = require 'child_process'
 should = require 'should'
 
-describe 'users', ->
+describe 'users_metrics', ->
 	users = null
 	metrics = null
 	uMetrics = null
@@ -36,7 +36,9 @@ describe 'users', ->
 							next err if err
 							user_metrics.should.be.an.instanceOf(Array)
 							user_metrics.length.should.be.equal 1
-							user_metrics[0].should.equal 3
+							user_metrics[0].id.should.equal 3
+							user_metrics[0].metrics.should.be.an.instanceOf(Array)
+							user_metrics[0].metrics[0].value.should.be.equal 1234
 							next()
 
 		it 'should return an error if user does not exist', (next) ->

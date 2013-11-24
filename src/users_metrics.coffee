@@ -38,6 +38,17 @@ module.exports =
 				rs.on 'error', (err) ->
 					return callback err if err
 				rs.on 'close', ->
-					callback null, metrics_ids
+					user_metrics = []
+					if metrics_ids.length > 0
+						for metric, i in metrics_ids
+							metrics.get metric, (err, fetched_metrics) ->
+								return callback err if err
+								user_metrics.push
+									id: metric
+									metrics: fetched_metrics
+								if i == metrics_ids.length
+									callback null, user_metrics
+					else
+						callback null, user_metrics
 			else
 				callback new Error 'No matching user for email: ' + user.email

@@ -13,7 +13,6 @@ describe 'users', ->
 			next()
 
 	describe 'save() get()', ->
-
 		it 'should save and get a user', (next) ->
 			user =
 				email: "thibaultcha@me.com"
@@ -29,7 +28,6 @@ describe 'users', ->
 					user.password.should.equal '1234'
 					user.name.should.equal 'Thibault'
 					next()
-
 		it 'should return null for a non existing user', (next) ->
 			users.get "wrong@domain.com", (err, user) ->
 				next err if err
@@ -37,7 +35,6 @@ describe 'users', ->
 				next()
 
 	describe 'delete()', ->
-
 		it 'should delete a user', (next) ->
 			user =
 				email: "thibaultcha@me.com"
@@ -50,11 +47,10 @@ describe 'users', ->
 						(user == null).should.be.true
 						next()
 
-	describe 'addMetrics() getMetrics()', ->
-
+	describe 'addMetrics()', ->
 		it 'should add an existing metric to an existing user', (next) ->
 			user =
-				email: "name@domain.com"
+				email: "add@domain.com"
 
 			met = [
 				timestamp:(new Date '2013-11-04 14:00 UTC').getTime(), value:1234
@@ -63,31 +59,40 @@ describe 'users', ->
 			]
 
 			metrics.save 3, met, (err) ->
-				next err if err
-				users.save user, (err) ->
-					next err if err
-					users.addMetrics user, 3, (err) ->
-						next err if err					
-						users.getMetrics user, (err, user_metrics) ->
-							next err if err
-							user_metrics.should.be.an.instanceOf(Array)
-							user_metrics[0].timestamp.should.equal met[0].timestamp
-							user_metrics[1].timestamp.should.equal met[1].timestamp
-							next()
-
-		it.skip 'should throw an error if user does not exist', (next) ->
-			user =
-				email: "oiuezafiazuefh@domain.com"
-
-			users.addMetrics user, 4, (err) ->
 				throw err if err
+				users.save user, (err) ->
+					throw err if err
+					users.addMetrics user, 3, (err) ->
+						throw err if err	
+						next()
+						#users.getMetrics user, (err, user_metrics) ->
+						#	next err if err
+						#	user_metrics.should.be.an.instanceOf(Array)
+						#	user_metrics[0].timestamp.should.equal met[0].timestamp
+						#	user_metrics[1].timestamp.should.equal met[1].timestamp
+						#	next()
+		it 'should return an error if user does not exist', (next) ->
+			user =
+				email: "wrong@domain.com"
+
+			users.addMetrics user, 0, (err) ->
+				err.should.not.be.null
 				next()
 
-	describe 'getMetrics()', ->
+		it 'should return an error if metric_id does not exist', (next) ->
+			user =
+				email: "name@domain.com"
 
+			users.save user, (err) ->
+				throw err if err
+				users.addMetrics user, 9999, (err) ->
+					err.should.not.be.null
+					next()
+
+	describe 'getMetrics()', ->
 		it.skip 'should return an empty array if no metrics for id', (next) ->
 			user = 
-				email: "user@domain.com"
+				email: "get@domain.com"
 
 			users.save user, (err) ->
 				next err if err
@@ -96,13 +101,12 @@ describe 'users', ->
 					user_metrics.should.be.an.instanceOf(Array)
 					user_metrics.length.should.equal 0
 					next()
-
-		it.skip 'should throw an error if user does not exist', (next) ->
+		it 'should return an error if user does not exist', (next) ->
 			user =
-				email: "qezfuoyzguyg@domain.com"
+				email: "wrong@domain.com"
 
 			users.getMetrics user, (err) ->
-				next err if err
+				err.should.not.be.null
 				next()
 
 	after (next) ->

@@ -3,11 +3,14 @@ metrics = require('./metrics')
 
 module.exports =
 	get: (email, callback) ->
+		console.log 'asked email: ' + email
 		user = null
 		rs = db.createReadStream
 		  start:"user:#{email}"
 		  stop:"user:#{email}"
 		rs.on 'data', (data) ->
+			console.log 'DATA'
+			console.log data
 			[name, password] = data.value.split ':'
 			user =
 				email: email
@@ -16,6 +19,7 @@ module.exports =
 		rs.on 'error', (err) ->
 			return callback err if err
 		rs.on 'close', ->
+			console.log user
 			callback null, user
 
 	save: (user, callback) ->
@@ -23,10 +27,10 @@ module.exports =
 		ws.write 
 			key: "user:#{user.email}"
 			value: user.name+":"+user.password
-		ws.end()
 		ws.on 'error', (err) ->
 			return callback err if err
 		ws.on 'close', ->
+			console.log 'SAVED: ' + user.email
 			callback()
 		ws.end()
 
@@ -42,6 +46,36 @@ module.exports =
 		rs.on 'close', ->
 			callback()
 
+	addMetrics: (user, metric_id, callback) ->
+		@get user.email, (err, fetched_user) ->
+			return callback err if err
+			if fetched_user isnt null
+				metrics.get metric_id, (err, metrics) ->
+					return callback err if err
+					if metrics.length > 0
+						ws = db.createWriteStream()
+						ws.write
+							key:"user_metric:#{user.email}:#{metric_id}"
+							value: ' '
+						ws.end()
+						ws.on 'error', (err) ->
+							return callback err if err
+						ws.on 'close', ->
+							callback null
+					else
+						return callback new Error 'No metrics with id: ' + metric_id
+			else
+				callback new Error 'No matching user for email: ' + user.email
+
+	getMetrics: (user, callback) ->
+		@get user.email, (err, fetched_user) ->
+			return callback err if err
+			if fetched_user isnt null
+				callback null
+			else
+				callback new Error 'No matching user for email: ' + user.email
+
+###
 	addMetrics: (user, metric_id, callback) ->
 		@get user.email, (err, user) ->
 			return callback err if err
@@ -83,3 +117,4 @@ module.exports =
 				callback new Error 'No user matching: ' + user.email
 
 	removeMetrics: (email, metric_id, callback) ->
+###

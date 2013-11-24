@@ -26,7 +26,6 @@ module.exports =
 		ws.on 'error', (err) ->
 			return callback err if err
 		ws.on 'close', ->
-			console.log 'SAVED: ' + user.email
 			callback()
 		ws.end()
 

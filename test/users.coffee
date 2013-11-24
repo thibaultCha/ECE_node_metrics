@@ -13,6 +13,7 @@ describe 'users', ->
 			next()
 
 	describe 'save() get()', ->
+		
 		it 'should save and get a user', (next) ->
 			user =
 				email: "thibaultcha@me.com"
@@ -28,6 +29,7 @@ describe 'users', ->
 					user.password.should.equal '1234'
 					user.name.should.equal 'Thibault'
 					next()
+
 		it 'should return null for a non existing user', (next) ->
 			users.get "wrong@domain.com", (err, user) ->
 				next err if err
@@ -35,6 +37,7 @@ describe 'users', ->
 				next()
 
 	describe 'delete()', ->
+
 		it 'should delete a user', (next) ->
 			user =
 				email: "thibaultcha@me.com"

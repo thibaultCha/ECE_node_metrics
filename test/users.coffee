@@ -17,6 +17,7 @@ describe 'users', ->
 	describe 'save() get()', ->
 		
 		it 'should save and get a user', (next) ->
+			@slow(500)
 			user =
 				email: "saveget@me.com"
 				password : "1234"
@@ -39,7 +40,7 @@ describe 'users', ->
 				(user == null).should.be.true
 				next()
 
-		it.skip 'should return an error if user with email already exists', (next) ->
+		it 'should return an error if user with email already exists', (next) ->
 			user =
 				email: "exists@me.com"
 

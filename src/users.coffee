@@ -10,26 +10,33 @@ module.exports =
 		  start:"user:#{email}:"
 		  stop:"user:#{email}:"
 		rs.on 'data', (data) ->
-			[name, password] = data.value.split ':'
-			user =
-				email: email
-				name: name
-				password: password
+			[user_mail, name, password] = data.value.split ':'
+			if user_mail == email
+				user =
+					email: email
+					name: name
+					password: password
 		rs.on 'error', (err) ->
 			return callback err if err
 		rs.on 'close', ->
 			callback null, user
 
 	save: (user, callback) ->
-		ws = db.createWriteStream()
-		ws.write 
-			key: "user:#{user.email}:"
-			value: user.name+":"+ if user.password then bcrypt.hashSync(user.password, salt) else ''
-		ws.on 'error', (err) ->
+		@get user.email, (err, fetched_user) ->
 			return callback err if err
-		ws.on 'close', ->
-			callback null, user
-		ws.end()
+			if fetched_user is null
+				ws = db.createWriteStream()
+				user.password = if user.password then bcrypt.hashSync(user.password, salt) else ''
+				ws.write 
+					key: "user:#{user.email}:"
+					value: user.email+":"+user.name+":"+user.password
+				ws.on 'error', (err) ->
+					return callback err if err
+				ws.on 'close', ->
+					callback null, user
+				ws.end()
+			else
+				callback new Error "User with email: #{user.email} already exists"
 
 	delete: (email, callback) ->
 		exists = false

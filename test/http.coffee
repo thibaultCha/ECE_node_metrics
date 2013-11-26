@@ -8,7 +8,6 @@ describe 'REST API', ->
 	describe 'metrics', ->
 
 		it 'should post and get a metric', (next) ->
-
 			met = [
 				timestamp:(new Date '2013-11-04 14:00 UTC').getTime(), value:3
 			,
@@ -71,6 +70,7 @@ describe 'REST API', ->
 	describe 'users', ->
 
 		it 'should post and get a user', (next) ->
+			@slow(200)
 			user =
 				email:"name@domain.com"
 				name:"name"
@@ -80,5 +80,6 @@ describe 'REST API', ->
 				return next if err 
 				return next new Error "Post failed. status: #{res.statusCode} #{res.body}" if res.statusCode isnt 200
 				saved_user = JSON.parse(body).user
-				saved_user.should.eql user
+				saved_user.name.should.equal user.name
+				saved_user.email.should.equal user.email
 				next()		

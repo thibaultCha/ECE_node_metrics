@@ -56,8 +56,10 @@ app.post '/users.json', (req, res) ->
 
 ### WEBSITE ###
 app.get '/', (req, res) ->
-	console.log req.session
-	res.render 'index', { title: "Metrics" }
+	if !req.session.valid
+		res.redirect '/login'
+	else
+		res.render 'index', { title: "Metrics" }
 
 app.get '/login', (req, res) ->
 	res.render 'login', { title: "Login" }
@@ -68,8 +70,10 @@ app.post '/login', (req, res) ->
 			res.send 404
 		else if bcrypt.compareSync(req.body.password, user.password)
 			thirtyMinutes = (60*60*1000)/2
+			#thirtyMinutes = (60*1000)/2 # test 30 seconds
 			req.session.cookie.expires = new Date(Date.now() + thirtyMinutes)
 			req.session.cookie.maxAge = thirtyMinutes
+			req.session.valid = true
 			res.redirect '/'
 		else
 			res.send 401
@@ -82,10 +86,10 @@ app.post '/register', (req, res) ->
 		email: req.body.email
 		name: req.body.name
 		password: req.body.password
-	users.save user, (err, user) ->
+	users.save user, (err, saved_user) ->
 		return next err if err
 		console.log 'user saved'
-		console.log user
+		console.log saved_user
 		res.redirect '/login'
 
 ###

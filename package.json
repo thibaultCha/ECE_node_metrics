@@ -8,7 +8,9 @@
 		"levelup": "*",
 		"leveldown": "*",
 		"bcrypt": "*",
-		"connect-level"
+		"connect-level": "*",
+		"stylus": "*",
+		"nib": "*"
 	},
 	"devDependencies": {
 		"mocha": "*",

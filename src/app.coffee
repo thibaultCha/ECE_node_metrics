@@ -2,6 +2,7 @@ http       = require 'http'
 express    = require 'express'
 LevelStore = require('connect-level')(express)
 stylus     = require 'stylus'
+nib        = require 'nib'
 config     = require '../config'
 app        = express()
 bcrypt     = require 'bcrypt'	
@@ -12,6 +13,13 @@ users   = require './users'
 
 app.set 'views', "#{__dirname}/../views"
 app.set 'view engine', 'jade'
+app.use stylus.middleware
+	src: "#{__dirname}/../public"
+	compile: (str, path) ->
+		  return stylus(str)
+		  .set('filename', path)
+		  .set('compress', true)
+		  .use(nib())
 app.use express.bodyParser()
 app.use express.methodOverride()
 app.use express.cookieParser 'abcd'

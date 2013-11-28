@@ -1,38 +1,14 @@
 extends layout
 
-block content
+block head
+  link(rel="stylesheet" href="/css/index.styl")
 
-  :stylus
-    content-width = 960px
-    graph-width = 800px
-    background-color = #ccc
-    .container
-      width content-width
-      margin 0 auto
-    #form
-      width graph-width
-      margin 0 auto
-      padding 20px 0
-      margin-bottom 50px
-      background-color background-color
-      h1
-        text-align center
-    #graph
-      width graph-width
-      height 400px 
-      margin 0 auto
-      background-color background-color
-    line path
-      fill none
-      stroke #000
-      shape-rendering crispEdges
-    .area
-      fill steelblue
+block content
 
   form#form(action="/metrics" method="GET")
     h1= title
     label(for="id") Metric id
-    input#metric_id(name="metric" placeholder="metric id")
+    input#metric_id(name="metric" placeholder="metric id")  
     br
     input#metric_ok(type="submit" value="OK")
 
@@ -43,6 +19,8 @@ block content
       id = $('#metric_id').val()
       e.preventDefault()
       $.getJSON "/metrics/#{id}.json", {}, (data) ->
+        console.log data
+
         metrics = data.metrics
 
         $('#graph').html('')

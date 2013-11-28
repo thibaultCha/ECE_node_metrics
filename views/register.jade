@@ -2,22 +2,6 @@ extends layout
 
 block content
 
-  :stylus
-    content-width = 960px
-    graph-width = 800px
-    background-color = #ccc
-    .container
-      width content-width
-      margin 0 auto
-    #form
-      width graph-width
-      margin 0 auto
-      padding 20px 0
-      margin-bottom 50px
-      background-color background-color
-      h1
-        text-align center
-
   form#form(action="/register" method="POST")
     h1= title
     label(for="email") Email

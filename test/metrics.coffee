@@ -21,22 +21,24 @@ describe 'metrics', ->
 
 		metrics.save 1, met, (err) ->
 			return next err if err
-			metrics.get 1, (err, metrics) ->
+			metrics.save 2, met, (err) ->
 				return next err if err
-				metrics.length.should.equal 3
-				[m1, m2, m3] = metrics
-				
-				m1.id.should.equal 1
-				m2.id.should.equal 1
-				m3.id.should.equal 1
-				
-				m1.value.should.equal 1234
-				m3.value.should.equal 9101
+				metrics.get 1, (err, metrics) ->
+					return next err if err
+					metrics.length.should.equal 3
+					[m1, m2, m3] = metrics
+					
+					m1.id.should.equal 1
+					m2.id.should.equal 1
+					m3.id.should.equal 1
+					
+					m1.value.should.equal 1234
+					m3.value.should.equal 9101
 
-				m1.timestamp.should.equal (new Date '2013-11-04 14:00 UTC').getTime()
-				m2.timestamp.should.equal m1.timestamp + 10*60*1000
-				
-				next()
+					m1.timestamp.should.equal (new Date '2013-11-04 14:00 UTC').getTime()
+					m2.timestamp.should.equal m1.timestamp + 10*60*1000
+					
+					next()
 
 	it 'should return an empty array if no metrics for id', (next) ->
 		metrics.get 9999, (err, metrics) ->

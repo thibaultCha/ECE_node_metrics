@@ -9,8 +9,6 @@ salt    = bcrypt.genSaltSync 10
 metrics = require './metrics'
 users   = require './users'
 
-LevelStore = require('./db') "#{__dirname}/../db/sessions"
-
 app.set 'views', "#{__dirname}/../views"
 app.set 'view engine', 'jade'
 app.use express.bodyParser()
@@ -28,33 +26,48 @@ app.use express.errorHandler
 
 
 ### REST API ###
-metric_get = (req, res) ->
-	metrics.get req.params.id, (err, metrics) ->
+
+# Metrics
+metric_get = (req, res, next) ->
+	id = parseInt(req.params.id)
+	metrics.get id, (err, metrics) ->
 		return next err if err
 		res.json
-			id: req.params.id
+			id: id
 			metrics: metrics
 app.get '/metrics/:id.json', metric_get
+
 app.get '/metrics?metric=:id', metric_get
-app.post '/metrics/:id.json', (req, res) ->
+
+app.post '/metrics/:id.json', (req, res, next) ->
+	console.log req.body.metrics
 	metrics.save req.params.id, req.body.metrics, (err) ->
 		return next err if err
-		metrics.get req.params.id, (err, metrics) ->
-			return next err if err
-			res.json
-				id: req.params.id
-				metrics: metrics
-app.delete '/metrics/:id.json', (req, res) ->
+		metric_get req, res, next
+
+app.delete '/metrics/:id.json', (req, res, next) ->
 	metrics.delete req.params.id, (err) ->
 		return next err if err
 		res.send 200
-app.post '/users.json', (req, res) ->
+
+# Users
+app.post '/users.json', (req, res, next) ->
 	users.save req.body.user, (err, user) ->
 		return next err if err
-		res.json
-			user: user
+		res.json user
+
+app.get '/users/:email.json', (req, res, next) ->
+	users.get req.params.email, (err, fetched_user) ->
+		return next err if err
+		res.json fetched_user
+
+app.delete '/users/:email.json', (req, res, next) ->
+	users.delete req.params.email, (err) ->
+		return next err if err
+		res.send 200 
 
 ### WEBSITE ###
+
 app.get '/', (req, res) ->
 	if !req.session.valid
 		res.redirect '/login'
@@ -81,7 +94,7 @@ app.post '/login', (req, res) ->
 app.get '/register', (req, res) ->
 	res.render 'register', { title: "Register" }
 
-app.post '/register', (req, res) ->
+app.post '/register', (req, res, next) ->
 	user =
 		email: req.body.email
 		name: req.body.name

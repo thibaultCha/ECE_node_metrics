@@ -28,18 +28,22 @@ describe 'users_metrics', ->
 
 			metrics.save 3, met, (err) ->
 				return next err if err
-				users.save user, (err) ->
+				metrics.save 4, met, (err) ->
 					return next err if err
-					uMetrics.addMetrics user, 3, (err) ->
-						return next err if err	
-						uMetrics.getMetrics user, (err, user_metrics) ->
+					users.save user, (err) ->
+						return next err if err
+						uMetrics.addMetrics user, 3, (err) ->
 							return next err if err
-							user_metrics.should.be.an.instanceOf(Array)
-							user_metrics.length.should.be.equal 1
-							user_metrics[0].id.should.equal 3
-							user_metrics[0].metrics.should.be.an.instanceOf(Array)
-							user_metrics[0].metrics[0].value.should.be.equal 1234
-							next()
+							uMetrics.addMetrics user, 4, (err) ->
+								return next err if err	
+								uMetrics.getMetrics user, (err, user_metrics) ->
+									return next err if err
+									user_metrics.should.be.an.instanceOf(Array)
+									user_metrics.length.should.equal 2
+									user_metrics[0].id.should.equal 4
+									user_metrics[0].metrics.should.be.an.instanceOf(Array)
+									user_metrics[0].metrics[0].value.should.be.equal 1234
+									next()
 
 		it 'should return an error if user does not exist', (next) ->
 			user =

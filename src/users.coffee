@@ -7,8 +7,8 @@ module.exports =
 	get: (email, callback) ->
 		user = null
 		rs = db.createReadStream
-		  start:"user:#{email}:"
-		  stop:"user:#{email}:"
+		  start:"user:#{email}"
+		  stop:"user:#{email}"
 		rs.on 'data', (data) ->
 			[user_mail, name, password] = data.value.split ':'
 			if user_mail == email
@@ -28,7 +28,7 @@ module.exports =
 				ws = db.createWriteStream()
 				user.password = if user.password then bcrypt.hashSync(user.password, salt) else ''
 				ws.write 
-					key: "user:#{user.email}:"
+					key: "user:#{user.email}"
 					value: user.email+":"+user.name+":"+user.password
 				ws.on 'error', (err) ->
 					return callback err if err

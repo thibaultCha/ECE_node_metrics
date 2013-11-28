@@ -8,11 +8,14 @@ module.exports =
 		  start:"metric:#{id}:"
 		  stop:"metric:#{id}:"
 		rs.on 'data', (data) ->
-			[_, id, timestamp] = data.key.split ':'
-			metrics.push 
-				id: parseInt(id), 
-				timestamp: parseInt(timestamp, 10), 
-				value: parseInt(data.value)
+			[_, met_id, timestamp] = data.key.split ':'
+			# start: stop: is WTF. Dirty if to double check.
+			# console.log met_id + ' ' + id
+			if parseInt(met_id) is id
+				metrics.push
+					id: parseInt(id),
+					timestamp: parseInt(timestamp, 10),
+					value: parseInt(data.value)
 		rs.on 'error', (err) ->
 			return callback err if err
 		rs.on 'close', ->
@@ -39,4 +42,4 @@ module.exports =
 		rs.on 'error', (err) ->
 			return callback err if err
 		rs.on 'close', ->
-			callback()		
+			callback()

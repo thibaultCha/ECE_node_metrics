@@ -20,7 +20,7 @@ module.exports =
 						ws.on 'close', ->
 							callback null
 					else
-						return callback new Error "No metrics with id:  #{metric_id}"
+						return callback new Error "No metrics with id: #{metric_id}"
 			else
 				callback new Error "No matching user for email: #{user.email}"
 
@@ -33,20 +33,23 @@ module.exports =
 				  start:"user_metric:#{user.email}:"
 				  stop:"user_metric:#{user.email}:"
 				rs.on 'data', (data) ->
-					[_, _, met_id] = data.key.split ':'
-					metrics_ids.push parseInt(met_id)
+					[_, user_mail, met_id] = data.key.split ':'
+					if user_mail is user.email
+						metrics_ids.push parseInt(met_id)
 				rs.on 'error', (err) ->
 					return callback err if err
 				rs.on 'close', ->
 					user_metrics = []
+					counter = 0
 					if metrics_ids.length > 0
-						for metric, i in metrics_ids
+						for metric in metrics_ids
 							metrics.get metric, (err, fetched_metrics) ->
 								return callback err if err
 								user_metrics.push
-									id: metric
+									id: fetched_metrics[0].id
 									metrics: fetched_metrics
-								if i == metrics_ids.length
+								counter++
+								if counter is metrics_ids.length
 									callback null, user_metrics
 					else
 						callback null, user_metrics
@@ -69,5 +72,3 @@ module.exports =
 					callback()
 			else
 				callback new Error "User #{user.email} does not have metrics: #{metric_id}"
-
-

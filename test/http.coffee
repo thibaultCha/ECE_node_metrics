@@ -18,13 +18,14 @@ describe 'REST API', ->
 				return next err if err
 				return next new Error "Post failed. status: #{res.statusCode} #{res.body}" if res.statusCode isnt 200
 				metrics = JSON.parse(body).metrics
+				console.log metrics
 				metrics.length.should.equal 2
 				[m1, m2] = metrics
 				m1.id.should.equal 2
 				m2.id.should.equal 2
 				m1.value.should.equal 3
 				m2.value.should.equal 4
-				
+
 				request.get 'http://localhost:8888/metrics/2.json', (err, res, body) ->
 					return next err if err
 					return next new Error "Get failed. status: #{res.statusCode} #{res.body}" if res.statusCode isnt 200
@@ -69,17 +70,27 @@ describe 'REST API', ->
 
 	describe 'users', ->
 
-		it 'should post and get a user', (next) ->
+		# we have to test all three here otherwise we get a 
+		# "user already exists" if we run the tests more than once
+		it 'should post, get and delete a user', (next) ->
 			@slow(200)
 			user =
-				email:"name@domain.com"
+				email:"postget@domain.com"
 				name:"name"
 				password:"1234"
 
 			request.post 'http://localhost:8888/users.json', { form: { user: user } }, (err, res, body) ->
 				return next if err 
 				return next new Error "Post failed. status: #{res.statusCode} #{res.body}" if res.statusCode isnt 200
-				saved_user = JSON.parse(body).user
+				saved_user = JSON.parse(body)
 				saved_user.name.should.equal user.name
 				saved_user.email.should.equal user.email
-				next()		
+				request.get 'http://localhost:8888/users/postget@domain.com.json', (err, res, body) ->
+					return next err if err
+					return next new Error "Get failed. status: #{res.statusCode} #{res.body}" if res.statusCode isnt 200
+					fetched_user = JSON.parse(body)
+					fetched_user.name.should.equal user.name
+					request.del 'http://localhost:8888/users/postget@domain.com.json', (err, res, body) ->
+						return next err if err
+						return next new Error "Delete failed. status: #{res.statusCode} #{res.body}" if res.statusCode isnt 200
+						next()		

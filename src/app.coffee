@@ -1,10 +1,11 @@
-http    = require 'http'
-express = require 'express'
-stylus  = require 'stylus'
-config  = require '../config'
-app     = express()
-bcrypt  = require 'bcrypt'	
-salt    = bcrypt.genSaltSync 10
+http       = require 'http'
+express    = require 'express'
+LevelStore = require('connect-level')(express)
+stylus     = require 'stylus'
+config     = require '../config'
+app        = express()
+bcrypt     = require 'bcrypt'	
+salt       = bcrypt.genSaltSync 10
 
 metrics = require './metrics'
 users   = require './users'
@@ -15,8 +16,8 @@ app.use express.bodyParser()
 app.use express.methodOverride()
 app.use express.cookieParser 'abcd'
 app.use express.session
-	secret: "123456"
-	#store: LevelStore
+	store: new LevelStore()
+	secret: 'keyboard cat'
 app.use app.router
 app.use stylus.middleware "#{__dirname}/../public"
 app.use express.static "#{__dirname}/../public"
@@ -40,7 +41,6 @@ app.get '/metrics/:id.json', metric_get
 app.get '/metrics?metric=:id', metric_get
 
 app.post '/metrics/:id.json', (req, res, next) ->
-	console.log req.body.metrics
 	metrics.save req.params.id, req.body.metrics, (err) ->
 		return next err if err
 		metric_get req, res, next
@@ -69,6 +69,7 @@ app.delete '/users/:email.json', (req, res, next) ->
 ### WEBSITE ###
 
 app.get '/', (req, res) ->
+	console.log req.session
 	if !req.session.valid
 		res.redirect '/login'
 	else

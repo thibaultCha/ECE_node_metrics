@@ -53,12 +53,17 @@ describe 'REST API', ->
 					return next err if err
 					return next new Error "Delete failed. status: #{res.statusCode} #{res.body}" if res.statusCode isnt 200
 					
-					request.get 'http://localhost:8888/metrics/3.json', (err, res, body) ->
+					request.get 'http://localhost:8888/metrics/3.json', (err, res) ->
 						return next err if err
-						return next new Error "Get failed. status: #{res.statusCode} #{res.body}" if res.statusCode isnt 200
-						metrics = JSON.parse(body).metrics
-						metrics.length.should.equal 0
+						res.statusCode.should.equal 404
 						next()
+
+		it 'should return 404 if no metrics for id', (next) ->
+			request.get 'http://localhost:8888/metrics/9999.json', (err, res) ->
+				return next err if err
+				res.statusCode.should.equal 404
+				next()
+
 	###
 		it 'should send 405 if request not allowed', (next) ->
 			request.put 'http://localhost:8888/metrics/1.json', (err, res, body) ->

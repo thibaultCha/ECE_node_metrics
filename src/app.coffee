@@ -41,9 +41,10 @@ metric_get = (req, res, next) ->
 	id = parseInt(req.params.id)
 	metrics.get id, (err, metrics) ->
 		return next err if err
-		res.json
-			id: id
-			metrics: metrics
+		if metrics.length > 0
+			res.json id: id, metrics: metrics
+		else
+			res.send 404
 app.get '/metrics/:id.json', metric_get
 
 app.get '/metrics?metric=:id', metric_get

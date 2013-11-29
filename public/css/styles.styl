@@ -2,7 +2,6 @@
 
 content-width = 960px
 graph-width = 800px
-background-color = #ccc
 theme-color = steelblue
 
 global-reset()
@@ -39,6 +38,7 @@ header:after
 
 .container
   width content-width
+  min-height 400px
   center()
 #form
   width 400px
@@ -49,11 +49,12 @@ header:after
   label
     text-align center
     display block
+    margin-top 10px
   input
     display block
     width 70%
     center()
-    margin-top 20px
+    margin-top 10px
     padding 5px 10px
     font-size 14px
     border-radius 5px
@@ -74,4 +75,3 @@ footer p
   margin-top 50px
   padding 10px 0
   text-align center
-

@@ -81,7 +81,6 @@ app.get '/', (req, res) ->
 	if !req.session.valid
 		res.redirect '/login'
 	else
-	    console.log req.session
 		res.render 'index', { title: "Metrics" }
 
 app.get '/login', (req, res) ->
@@ -114,6 +113,10 @@ app.post '/register', (req, res, next) ->
 		console.log 'user saved'
 		console.log saved_user
 		res.redirect '/login'
+
+app.get '/user', (req, res, next) ->
+	console.log req.session
+	res.render 'user'
 
 ###
 app.all '*', (req, res) ->

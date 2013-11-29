@@ -1,14 +1,13 @@
 extends layout
 
 block head
-  link(rel="stylesheet" href="/css/index.styl")
+  link(rel="stylesheet" href="/css/index.css")
 
 block content
 
   form#form(action="/metrics" method="GET")
-    label(for="id") Metric id
+    label(for="id") Metric id:
     input#metric_id(name="metric" placeholder="metric id")  
-    br
     input.submit(type="submit" value="OK")
 
   #graph
@@ -17,6 +16,8 @@ block content
 
     $('.submit').click (e) ->
       id = $('#metric_id').val()
+      graph = $('#graph')
+      graph.html('')
       e.preventDefault()
       $.ajax "/metrics/#{id}.json",
         type: "GET",
@@ -26,7 +27,6 @@ block content
             #console.log response
             metrics = response.metrics
 
-            $('#graph').html('')
             margin = {top: 20, right: 20, bottom: 30, left: 50}
             width  = 800 - margin.left - margin.right
             height = 400 - margin.top - margin.bottom
@@ -78,6 +78,6 @@ block content
                   .style("text-anchor", "end")
                   .text("Value")
           404: (response) ->
-             console.log response
+             graph.append('<span>No metrics for id: '+id+'</span>')
         success: ->
             

@@ -4,6 +4,17 @@ ol,ul{list-style:none}
 table{border-collapse:separate;border-spacing:0;vertical-align:middle}
 caption,th,td{text-align:left;font-weight:normal;vertical-align:middle}
 a img{border:none}
+body{font-family:'Georgia'}
+header{padding:10px 0;background-color:#4682b4;color:#fff;margin-bottom:40px;}
+header h1{width:200px;margin:0 auto;text-align:center;font-size:30px}
+header .links{float:right;}
+header .links li{margin-right:50px;display:inline;}
+header .links li a{color:#fff}
+header .links li :hover{color:#ccc}
+header:after{content:'';display:block;clear:both}
 .container{width:960px;margin:0 auto}
-#form{width:800px;margin:0 auto;padding:20px 0;margin-bottom:50px;background-color:#ccc;}
-#form h1{text-align:center}
+#form{width:400px;margin:0 auto;-webkit-border-radius:10px;border-radius:10px;padding:30px 0;background-color:#a1c1db;}
+#form label{text-align:center;display:block}
+#form input{display:block;width:70%;margin:0 auto;margin-top:20px;padding:5px 10px;font-size:14px;-webkit-border-radius:5px;border-radius:5px;border:1px #386890 solid;outline:none}
+#form .submit{width:20%;cursor:pointer;padding:.5em 1em;color:#fff;background-color:#4682b4;border:none;-webkit-border-radius:5px;border-radius:5px;font-size:15px;outline:none}
+footer p{margin-top:50px;padding:10px 0;text-align:center}

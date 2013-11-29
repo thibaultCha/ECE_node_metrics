@@ -25,7 +25,7 @@ app.use express.methodOverride()
 app.use express.cookieParser 'abcd'
 app.use express.session
 	store: new LevelStore()
-	secret: 'keyboard cat'
+	secret: 'abcd'
 app.use app.router
 app.use stylus.middleware "#{__dirname}/../public"
 app.use express.static "#{__dirname}/../public"
@@ -77,10 +77,10 @@ app.delete '/users/:email.json', (req, res, next) ->
 ### WEBSITE ###
 
 app.get '/', (req, res) ->
-	console.log req.session
 	if !req.session.valid
 		res.redirect '/login'
 	else
+	    console.log req.session
 		res.render 'index', { title: "Metrics" }
 
 app.get '/login', (req, res) ->

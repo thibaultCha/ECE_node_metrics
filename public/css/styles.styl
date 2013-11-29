@@ -3,17 +3,75 @@
 content-width = 960px
 graph-width = 800px
 background-color = #ccc
+theme-color = steelblue
 
 global-reset()
 
+center()
+  margin 0 auto
+
+body
+  font-family 'Georgia'
+
+header
+  padding 10px 0
+  background-color theme-color
+  color white
+  margin-bottom 40px
+  h1
+    width 200px
+    center()
+    text-align center
+    font-size 30px
+  .links
+    float right
+    li
+      margin-right 50px
+      display inline
+      a
+        color white
+      :hover
+        color darken(white, 20%)
+header:after
+  content ''
+  display block
+  clear both
+
 .container
   width content-width
-  margin 0 auto
+  center()
 #form
-  width graph-width
-  margin 0 auto
-  padding 20px 0
-  margin-bottom 50px
-  background-color background-color
-  h1
+  width 400px
+  center()
+  border-radius(10px)
+  padding 30px 0
+  background-color lighten(theme-color, 50%)
+  label
     text-align center
+    display block
+  input
+    display block
+    width 70%
+    center()
+    margin-top 20px
+    padding 5px 10px
+    font-size 14px
+    border-radius 5px
+    border 1px darken(theme-color, 20%) solid
+    outline none
+  .submit
+    width 20%
+    cursor pointer
+    padding 0.5em 1em
+    color #fff
+    background-color theme-color
+    border none
+    border-radius 5px
+    font-size 15px
+    outline none
+
+footer p
+  margin-top 50px
+  padding 10px 0
+  text-align center
+

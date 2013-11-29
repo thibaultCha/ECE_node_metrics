@@ -6,16 +6,15 @@ block head
 block content
 
   form#form(action="/metrics" method="GET")
-    h1= title
     label(for="id") Metric id
     input#metric_id(name="metric" placeholder="metric id")  
     br
-    input#metric_ok(type="submit" value="OK")
+    input.submit(type="submit" value="OK")
 
   #graph
 
   :coffee
-    $('#metric_ok').click (e) ->
+    $('.submit').click (e) ->
       id = $('#metric_id').val()
       e.preventDefault()
       $.getJSON "/metrics/#{id}.json", {}, (data) ->

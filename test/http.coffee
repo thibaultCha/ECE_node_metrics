@@ -18,7 +18,6 @@ describe 'REST API', ->
 				return next err if err
 				return next new Error "Post failed. status: #{res.statusCode} #{res.body}" if res.statusCode isnt 200
 				metrics = JSON.parse(body).metrics
-				console.log metrics
 				metrics.length.should.equal 2
 				[m1, m2] = metrics
 				m1.id.should.equal 2

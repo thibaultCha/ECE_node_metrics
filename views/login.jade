@@ -3,14 +3,11 @@ extends layout
 block content
 
   form#form(action="/login" method="POST")
-    h1= title
     label(for="email") Email
     input#email(name="email" placeholder="email")
-    br
+    hr
     label(for="password") Password
     input#password(name="password" type="password")
-    br
-    input#metric_ok(type="submit" value="OK")
-
-  .register
-    a(href="/register") register
+    input.submit(type="submit" value="Login")
+    a(href="/register").register register
+    

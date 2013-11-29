@@ -1,7 +1,6 @@
 {exec} = require 'child_process'
 should = require 'should'
 bcrypt = require 'bcrypt'
-salt   = bcrypt.genSaltSync 10
 
 describe 'users', ->
 	users = null
@@ -17,10 +16,10 @@ describe 'users', ->
 	describe 'save() get()', ->
 		
 		it 'should save and get a user', (next) ->
-			@slow(500)
+			@slow(200)
 			user =
 				email: "saveget@me.com"
-				password : "1234"
+				password: "1234"
 				name: "Thibault"
 
 			users.save user, (err, saved_user) ->
@@ -30,9 +29,21 @@ describe 'users', ->
 					return next err if err
 					user.should.be.an.instanceOf(Object)
 					user.email.should.equal 'saveget@me.com'
-					bcrypt.compareSync("1234", user.password).should.be.true
+					user.password.should.not.be.null
 					user.name.should.equal 'Thibault'
 					next()
+
+		it 'should encrypt password', (next) ->
+			@slow(500)
+			user =
+				email: "password@me.com"
+				password: "abcdef"
+				name: ""
+
+			users.save user, (err, saved_user) ->
+				return next err if err
+				bcrypt.compareSync("abcdef", saved_user.password).should.be.true
+				next()
 
 		it 'should return null for a non existing user', (next) ->
 			users.get "wrong@domain.com", (err, user) ->

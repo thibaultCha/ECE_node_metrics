@@ -8,8 +8,9 @@ app        = express()
 bcrypt     = require 'bcrypt'	
 salt       = bcrypt.genSaltSync 10
 
-metrics = require './metrics'
-users   = require './users'
+metrics  = require './metrics'
+uMetrics = require './users_metrics'
+users    = require './users'
 
 app.set 'views', "#{__dirname}/../views"
 app.set 'view engine', 'jade'
@@ -73,8 +74,13 @@ app.get '/users/:email.json', (req, res, next) ->
 app.delete '/users/:email.json', (req, res, next) ->
 	users.delete req.params.email, (err) ->
 		return next err if err
-		res.send 200 
-
+		res.send 200
+###
+app.post '/users/:email/metrics/:id', (req, res, next) ->
+	uMetrics.addMetrics req.params.email, req.params.id, (err) ->
+		return next err if err
+		res.send 200
+###
 ### WEBSITE ###
 
 app.get '/', (req, res) ->
@@ -96,6 +102,7 @@ app.post '/login', (req, res) ->
 			req.session.cookie.expires = new Date(Date.now() + thirtyMinutes)
 			req.session.cookie.maxAge = thirtyMinutes
 			req.session.valid = true
+			req.session.user = user
 			res.redirect '/'
 		else
 			res.send 401
@@ -116,7 +123,10 @@ app.post '/register', (req, res, next) ->
 
 app.get '/user', (req, res, next) ->
 	console.log req.session
-	res.render 'user'
+	if !req.session.valid
+		res.redirect '/login'
+	else
+		res.render 'user', { user: req.session.user }
 
 ###
 app.all '*', (req, res) ->

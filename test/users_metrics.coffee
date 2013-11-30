@@ -32,11 +32,11 @@ describe 'users_metrics', ->
 					return next err if err
 					users.save user, (err) ->
 						return next err if err
-						uMetrics.addMetrics user, 3, (err) ->
+						uMetrics.addMetrics user.email, 3, (err) ->
 							return next err if err
-							uMetrics.addMetrics user, 4, (err) ->
+							uMetrics.addMetrics user.email, 4, (err) ->
 								return next err if err	
-								uMetrics.getMetrics user, (err, user_metrics) ->
+								uMetrics.getMetrics user.email, (err, user_metrics) ->
 									return next err if err
 									user_metrics.should.be.an.instanceOf(Array)
 									user_metrics.length.should.equal 2
@@ -49,7 +49,7 @@ describe 'users_metrics', ->
 			user =
 				email: "addwrong@domain.com"
 
-			uMetrics.addMetrics user, 0, (err) ->
+			uMetrics.addMetrics user.email, 0, (err) ->
 				err.should.not.be.null
 				next()
 
@@ -59,7 +59,7 @@ describe 'users_metrics', ->
 
 			users.save user, (err) ->
 				return next err if err
-				uMetrics.addMetrics user, 9999, (err) ->
+				uMetrics.addMetrics user.email, 9999, (err) ->
 					err.should.not.be.null
 					next()
 
@@ -71,7 +71,7 @@ describe 'users_metrics', ->
 
 			users.save user, (err) ->
 				return next err if err
-				uMetrics.getMetrics user, (err, user_metrics) ->
+				uMetrics.getMetrics user.email, (err, user_metrics) ->
 					return next err if err
 					user_metrics.should.be.an.instanceOf(Array)
 					user_metrics.length.should.equal 0
@@ -81,7 +81,7 @@ describe 'users_metrics', ->
 			user =
 				email: "getwrong@domain.com"
 
-			uMetrics.getMetrics user, (err) ->
+			uMetrics.getMetrics user.email, (err) ->
 				err.should.not.be.null
 				next()
 
@@ -91,7 +91,7 @@ describe 'users_metrics', ->
 			user =
 				email: "removewrong@domain.com"
 
-			uMetrics.removeMetrics user, 1, (err) ->
+			uMetrics.removeMetrics user.email, 1, (err) ->
 				err.should.not.be.null
 				next()
 
@@ -101,7 +101,7 @@ describe 'users_metrics', ->
 
 			users.save user, (err) ->
 				return next err if err
-				uMetrics.removeMetrics user, 9999, (err) ->
+				uMetrics.removeMetrics user.email, 9999, (err) ->
 					err.should.not.be.null
 					next()
 
@@ -119,16 +119,16 @@ describe 'users_metrics', ->
 				return next err if err
 				metrics.save 1, met, (err) ->
 					return next err if err
-					uMetrics.addMetrics user, 1, (err) ->
+					uMetrics.addMetrics user.email, 1, (err) ->
 						return next err if err
-						uMetrics.getMetrics user, (err, user_metrics) ->
+						uMetrics.getMetrics user.email, (err, user_metrics) ->
 							return next err if err
 							user_metrics.should.be.an.instanceOf(Array)
 							user_metrics.length.should.equal 1
 							user_metrics[0].metrics[0].value.should.equal 1234
-							uMetrics.removeMetrics user, 1, (err) ->
+							uMetrics.removeMetrics user.email, 1, (err) ->
 								return next err if err
-								uMetrics.getMetrics user, (err, final_metrics) ->
+								uMetrics.getMetrics user.email, (err, final_metrics) ->
 									return next err if err
 									final_metrics.length.should.be.equal 0
 									next()

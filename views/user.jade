@@ -4,5 +4,10 @@ block head
   link(rel="stylesheet" href="/css/user.css")
 
 block content
+  h1= user.email
 
-  p yo
+  :coffee
+
+    $(document).ready(->
+        
+    )

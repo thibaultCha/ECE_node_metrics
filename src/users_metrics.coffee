@@ -3,8 +3,8 @@ metrics = require('./metrics')
 users   = require('./users')
 
 module.exports =
-	addMetrics: (user, metric_id, callback) ->
-		users.get user.email, (err, fetched_user) ->
+	addMetrics: (email, metric_id, callback) ->
+		users.get email, (err, fetched_user) ->
 			return callback err if err
 			if fetched_user isnt null
 				metrics.get metric_id, (err, metrics) ->
@@ -12,7 +12,7 @@ module.exports =
 					if metrics.length > 0
 						ws = db.createWriteStream()
 						ws.write
-							key:"user_metric:#{user.email}:#{metric_id}"
+							key:"user_metric:#{email}:#{metric_id}"
 							value: ' '
 						ws.end()
 						ws.on 'error', (err) ->
@@ -22,19 +22,19 @@ module.exports =
 					else
 						return callback new Error "No metrics with id: #{metric_id}"
 			else
-				callback new Error "No matching user for email: #{user.email}"
+				callback new Error "No matching user for email: #{email}"
 
-	getMetrics: (user, callback) ->
-		users.get user.email, (err, fetched_user) ->
+	getMetrics: (email, callback) ->
+		users.get email, (err, fetched_user) ->
 			return callback err if err
 			if fetched_user isnt null
 				metrics_ids = []
 				rs = db.createReadStream
-				  start:"user_metric:#{user.email}:"
-				  stop:"user_metric:#{user.email}:"
+				  start:"user_metric:#{email}:"
+				  stop:"user_metric:#{email}:"
 				rs.on 'data', (data) ->
 					[_, user_mail, met_id] = data.key.split ':'
-					if user_mail is user.email
+					if user_mail is email
 						metrics_ids.push parseInt(met_id)
 				rs.on 'error', (err) ->
 					return callback err if err
@@ -54,15 +54,15 @@ module.exports =
 					else
 						callback null, user_metrics
 			else
-				callback new Error "No matching user for email: #{user.email}"
+				callback new Error "No matching user for email: #{email}"
 
-	removeMetrics: (user, metric_id, callback) ->
-		@getMetrics user, (err, metrics) ->
+	removeMetrics: (email, metric_id, callback) ->
+		@getMetrics email, (err, metrics) ->
 			return callback err if err
 			if metrics.length > 0
 				rs = db.createReadStream
-					start:"user_metric:#{user.email}:"
-					stop:"user_metric:#{user.email}:"
+					start:"user_metric:#{email}:"
+					stop:"user_metric:#{email}:"
 				rs.on 'data', (data) ->
 					db.del data.key, (err) ->
 						return callback err if err
@@ -71,4 +71,4 @@ module.exports =
 				rs.on 'close', ->
 					callback()
 			else
-				callback new Error "User #{user.email} does not have metrics: #{metric_id}"
+				callback new Error "User #{email} does not have metrics: #{metric_id}"

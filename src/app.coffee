@@ -35,15 +35,10 @@ app.use express.errorHandler
 	showStack: true
 	dumpException: true
 
-auth = (req, res, next) ->
-	if req.session.valid is true
-		next()
-	else
-		res.redirect '/login'
-
 ### REST API ###
 
-# Metrics
+# Metrics, only used for tests purposes
+# /!\ no authentification
 metric_get = (req, res, next) ->
 	id = parseInt(req.params.id)
 	metrics.get id, (err, metrics) ->
@@ -70,6 +65,12 @@ app.delete '/metrics/:id.json', (req, res, next) ->
 			res.send 404
 
 # Users
+auth = (req, res, next) ->
+	if req.session.valid is true
+		next()
+	else
+		res.redirect '/login'
+
 app.post '/users.json', (req, res, next) ->
 	users.save req.body.user, (err, user) ->
 		return next err if err
@@ -84,8 +85,11 @@ app.get '/users/:email.json', (req, res, next) ->
 			res.send 404
 
 app.get '/users/:email/:id.json', auth, (req, res, next) ->
-	uMetrics.get req.params.email, (err, fetched_metrics) ->
-		
+	uMetrics.getMetrics req.params.email, (err, metrics_ids) ->
+		if req.params.id in metrics_ids
+			metric_get req, res, next
+		else
+			res.send 401
 
 app.delete '/users/:email.json', (req, res, next) ->
 	users.delete req.params.email, (err, success) ->
@@ -108,7 +112,9 @@ app.post '/users/:email/metrics.json', (req, res, next) ->
 ### WEBSITE ###
 
 app.get '/', auth, (req, res) ->
-	res.render 'index', { title: "Metrics" }
+	res.render 'index'
+		title: "Metrics"
+		user: req.session.user
 
 app.get '/login', (req, res) ->
 	res.render 'login', { title: "Login" }

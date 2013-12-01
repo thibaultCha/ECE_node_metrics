@@ -5,6 +5,8 @@ block head
 
 block content
 
+  h1#email user.email
+
   form#form(action="/metrics" method="GET")
     label(for="id") Metric id:
     input#metric_id(name="metric" placeholder="metric id")  
@@ -13,13 +15,13 @@ block content
   #graph
 
   :coffee
-
+    user_email = $('#email').html()
     $('.submit').click (e) ->
       id = $('#metric_id').val()
       graph = $('#graph')
       graph.html('')
       e.preventDefault()
-      $.ajax "/metrics/#{id}.json",
+      $.ajax "/users/#{user_email}/#{id}.json",
         type: "GET",
         data: {},
         statusCode:
@@ -79,5 +81,8 @@ block content
                   .text("Value")
           404: (response) ->
              graph.append('<span>No metrics for id: '+id+'</span>')
+
+          401: (response) ->
+              console.log response
         success: ->
             

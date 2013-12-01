@@ -1,6 +1,8 @@
 {
 	"name": "ece-metrics",
 	"version": "0.0.0",
+	"description": "ECE assignment",
+	"private": true,
 	"dependencies": {
 		"express": "*",
 		"jade": "*",

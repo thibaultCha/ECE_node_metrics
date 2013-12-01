@@ -11,3 +11,22 @@ block content
     input.submit(type="submit" value="Login")
     a(href="/register").register register
     
+  #content
+
+  :coffee
+    $('.submit').click (e) ->
+      e.preventDefault()
+      email = $('#email').val()
+      password = $('#password').val()
+      error = $('#content')
+      error.html('')
+      $.ajax "/login",
+        type: "POST",
+        data: { email:email, password:password },
+        statusCode:
+          200: ->
+            window.location = '/'
+          401: ->
+            error.append("<span class='error'>Invalid password</span>")
+          404: ->
+            error.append("<span class='error'>No user for email: #{email}</span>")

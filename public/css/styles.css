@@ -12,9 +12,12 @@ header .links li{margin-right:50px;display:inline;}
 header .links li a{color:#fff}
 header .links li :hover{color:#ccc}
 header:after{content:'';display:block;clear:both}
-.container{width:960px;min-height:400px;margin:0 auto}
-#form{width:400px;margin:0 auto;-webkit-border-radius:10px;border-radius:10px;padding:30px 0;background-color:#a1c1db;}
-#form label{text-align:center;display:block;margin-top:10px}
-#form input{display:block;width:70%;margin:0 auto;margin-top:10px;padding:5px 10px;font-size:14px;-webkit-border-radius:5px;border-radius:5px;border:1px #386890 solid;outline:none}
-#form .submit{width:20%;cursor:pointer;padding:.5em 1em;color:#fff;background-color:#4682b4;border:none;-webkit-border-radius:5px;border-radius:5px;font-size:15px;outline:none}
+.container{width:960px;min-height:400px;margin:0 auto;}
+.container #form{width:400px;margin:0 auto;-webkit-border-radius:10px;border-radius:10px;padding:30px 0;background-color:#a1c1db;}
+.container #form label{text-align:center;display:block;margin-top:10px}
+.container #form input{display:block;width:70%;margin:0 auto;margin-top:10px;padding:5px 10px;font-size:14px;-webkit-border-radius:5px;border-radius:5px;border:1px #386890 solid;outline:none}
+.container #form .submit{width:20%;cursor:pointer;padding:.5em 1em;color:#fff;background-color:#4682b4;border:none;-webkit-border-radius:5px;border-radius:5px;font-size:15px;outline:none}
+.container #content{width:800px;margin:0 auto;margin-top:50px;}
+.container #content span{display:block;text-align:center}
+.container #content .error{color:#f00}
 footer p{margin-top:50px;padding:10px 0;text-align:center}

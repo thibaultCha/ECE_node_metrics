@@ -73,8 +73,10 @@ auth = (req, res, next) ->
 
 app.post '/users.json', (req, res, next) ->
 	users.save req.body.user, (err, user) ->
-		return next err if err
-		res.json user
+		if err
+			res.send 400
+		else
+			res.json user
 
 app.get '/users/:email.json', (req, res, next) ->
 	users.get req.params.email, (err, fetched_user) ->
@@ -84,19 +86,6 @@ app.get '/users/:email.json', (req, res, next) ->
 		else
 			res.send 404
 
-app.get '/users/:email/metrics.json', (req, res, next) ->
-	uMetrics.getDetailedMetrics req.params.email, (err, user_metrics) ->
-		return next err if err
-		res.json user_metrics
-
-app.get '/users/:email/:id.json', auth, (req, res, next) ->
-	uMetrics.getMetrics req.params.email, (err, metrics_ids) ->
-		return next err if err
-		if parseInt(req.params.id) in metrics_ids
-			metric_get req, res, next
-		else
-			res.send 401
-
 app.delete '/users/:email.json', (req, res, next) ->
 	users.delete req.params.email, (err, success) ->
 		return next err if err
@@ -105,6 +94,22 @@ app.delete '/users/:email.json', (req, res, next) ->
 		else
 			res.send 404
 
+# all detailed metrics for user
+app.get '/users/:email/metrics.json', (req, res, next) ->
+	uMetrics.getDetailedMetrics req.params.email, (err, user_metrics) ->
+		return next err if err
+		res.json user_metrics
+
+# unique metric for user
+app.get '/users/:email/:id.json', auth, (req, res, next) ->
+	uMetrics.getMetrics req.params.email, (err, metrics_ids) ->
+		return next err if err
+		if parseInt(req.params.id) in metrics_ids
+			metric_get req, res, next
+		else
+			res.send 401
+
+# attach metric to user
 app.post '/users/:email/metrics.json', (req, res, next) ->
 	uMetrics.addMetrics req.params.email, parseInt(req.body.metrics_id), (err) ->
 		return next err if err
@@ -131,21 +136,12 @@ app.post '/login', (req, res) ->
 			req.session.cookie.maxAge = thirtyMinutes
 			req.session.valid = true
 			req.session.user = user
-			res.redirect '/'
+			res.send 200
 		else
 			res.send 401
 
 app.get '/register', (req, res) ->
 	res.render 'register', { title: "Register" }
-
-app.post '/register', (req, res, next) ->
-	user =
-		email: req.body.email
-		name: req.body.name
-		password: req.body.password
-	users.save user, (err, saved_user) ->
-		return next err if err
-		res.redirect '/login'
 
 app.get '/logout', auth, (req, res, next) ->
 	req.session.valid = false

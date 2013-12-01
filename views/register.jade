@@ -10,3 +10,23 @@ block content
     label(for="password") Password
     input#password(name="password" type="password")
     input.submit(type="submit" value="OK")
+
+  #content
+
+  :coffee
+    $('.submit').click (e) ->
+      e.preventDefault()
+      email = $('#email').val()
+      password = $('#password').val()
+      name = $('#name').val()
+      error = $('#content')
+      console.log 'send'
+      error.html('')
+      $.ajax "/users.json",
+        type: "POST",
+        data: { user: {email: email, name: name, password: password} },
+        statusCode:
+          200: ->
+            window.location = '/login'
+          400: ->
+            error.append("<span class='error'>User with email '#{email}' already exists</span>")

@@ -12,15 +12,15 @@ block content
     input#metric_id(name="metric" placeholder="metric id")  
     input.submit(type="submit" value="OK")
 
-  #graph
+  #content
 
   :coffee
     user_email = $('#email').html()
     $('.submit').click (e) ->
-      id = $('#metric_id').val()
-      graph = $('#graph')
-      graph.html('')
       e.preventDefault()
+      id = $('#metric_id').val()
+      content = $('#content')
+      content.html('')
       $.ajax "/users/#{user_email}/#{id}.json",
         type: "GET",
         data: {},
@@ -45,7 +45,7 @@ block content
               .y1 (m) ->
                 return y m.value
 
-            svg = d3.select("#graph").append("svg")
+            svg = d3.select("#content").append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
               .append("g")
@@ -80,12 +80,12 @@ block content
                   .style("text-anchor", "end")
                   .text("Value")
           404: (response) ->
-             graph.append('<span>No metrics for id: '+id+'</span>')
+             content.append('<span>No metrics for id: '+id+'</span>')
 
           401: (response) ->
-            graph.append('<span class="error">401 Unauthorized</span>')
+            content.append('<span class="error">401 Unauthorized</span>')
 
         error: (xhr) ->
           if xhr.status is 0
-            graph.append('<span class="error">Server not reachable</span>')
+            content.append('<span class="error">Server not reachable</span>')
             

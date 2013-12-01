@@ -61,6 +61,34 @@ describe 'users_metrics', ->
 					err.should.not.be.null
 					next()
 
+	describe 'addBatchMetrics()', ->
+
+		it 'should add a batch of existing metrics', (next) ->
+			user =
+				email: "addbatch@domain.com"
+
+			met = [
+				timestamp:(new Date '2013-11-04 14:00 UTC').getTime(), value:1234
+			]
+			met2 = [
+				timestamp:(new Date '2013-11-04 14:10 UTC').getTime(), value:5678
+			]
+
+			metrics.save 5, met, (err) ->
+				return next err if err
+				metrics.save 6, met2, (err) ->
+					return next err if err
+					users.save user, (err) ->
+						return next err if err
+						uMetrics.addBatchMetrics user.email, [5,6], (err) ->
+							return next err if err
+							uMetrics.getMetrics user.email, (err, metrics_ids) ->
+								return next err if err
+								metrics_ids.should.be.an.instanceOf(Array)
+								metrics_ids.length.should.equal 2
+								metrics_ids[0].should.equal 5
+								next()
+
 	describe 'getDetailedMetrics()', ->
 
 		it 'should return detailed metrics', (next) ->

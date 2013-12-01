@@ -13,25 +13,25 @@ describe 'REST API', ->
 				timestamp:(new Date '2013-11-04 14:10 UTC').getTime(), value:4 
 			]
 
-			request.post 'http://localhost:8888/metrics/2.json', { form: { metrics: met } }, (err, res, body) ->
+			request.post 'http://localhost:8888/metrics/10.json', { form: { metrics: met } }, (err, res, body) ->
 				return next err if err
 				return next new Error "Post failed. status: #{res.statusCode} #{res.body}" if res.statusCode isnt 200
 				fetched_metrics = JSON.parse(body).metrics
 				fetched_metrics.length.should.equal 2
 				[m1, m2] = fetched_metrics
-				m1.id.should.equal 2
-				m2.id.should.equal 2
+				m1.id.should.equal 10
+				m2.id.should.equal 10
 				m1.value.should.equal 3
 				m2.value.should.equal 4
 
-				request.get 'http://localhost:8888/metrics/2.json', (err, res, body) ->
+				request.get 'http://localhost:8888/metrics/10.json', (err, res, body) ->
 					return next err if err
 					return next new Error "Get failed. status: #{res.statusCode} #{res.body}" if res.statusCode isnt 200
 					fetched_metrics = JSON.parse(body).metrics
 					fetched_metrics.length.should.equal 2
 					[m1, m2] = fetched_metrics
-					m1.id.should.equal 2
-					m2.id.should.equal 2
+					m1.id.should.equal 10
+					m2.id.should.equal 10
 					m1.value.should.equal 3
 					m2.value.should.equal 4
 
@@ -68,14 +68,6 @@ describe 'REST API', ->
 				return next err if err
 				res.statusCode.should.equal 404
 				next()
-
-	###
-		it 'should send 405 if request not allowed', (next) ->
-			request.put 'http://localhost:8888/metrics/1.json', (err, res, body) ->
-				return next err if err
-				res.statusCode.should.equal 405
-				next()
-	###
 
 	describe 'users', ->
 
@@ -133,7 +125,7 @@ describe 'REST API', ->
 			name: "name"
 
 		before (next) ->
-			met_id = 1
+			met_id = 11
 			met = [
 				timestamp:(new Date '2013-12-21 14:00 UTC').getTime(), value:120
 			,
@@ -164,3 +156,11 @@ describe 'REST API', ->
 				return next if err 
 				return next new Error "Post failed. status: #{res.statusCode} #{res.body}" if res.statusCode isnt 200
 				next()
+
+	###
+		it 'should send 405 if request not allowed', (next) ->
+			request.put 'http://localhost:8888/metrics/1.json', (err, res, body) ->
+				return next err if err
+				res.statusCode.should.equal 405
+				next()
+	###

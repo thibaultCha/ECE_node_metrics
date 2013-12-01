@@ -22,3 +22,4 @@ footer p{margin-top:50px;padding:10px 0;text-align:center}
 #graph span{display:block;text-align:center}
 line path{fill:none;stroke:#000;shape-rendering:crispEdges}
 .area{fill:#4682b4}
+.error{color:#f00}

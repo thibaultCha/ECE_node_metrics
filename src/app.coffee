@@ -84,9 +84,15 @@ app.get '/users/:email.json', (req, res, next) ->
 		else
 			res.send 404
 
+app.get '/users/:email/metrics.json', (req, res, next) ->
+	uMetrics.getDetailedMetrics req.params.email, (err, user_metrics) ->
+		return next err if err
+		res.json user_metrics
+
 app.get '/users/:email/:id.json', auth, (req, res, next) ->
 	uMetrics.getMetrics req.params.email, (err, metrics_ids) ->
-		if req.params.id in metrics_ids
+		return next err if err
+		if parseInt(req.params.id) in metrics_ids
 			metric_get req, res, next
 		else
 			res.send 401
@@ -99,20 +105,15 @@ app.delete '/users/:email.json', (req, res, next) ->
 		else
 			res.send 404
 
-app.get '/users/:email/metrics.json', (req, res, next) ->
-	uMetrics.getMetrics req.params.email, (err, user_metrics) ->
-		return next err if err
-		res.json user_metrics
-
 app.post '/users/:email/metrics.json', (req, res, next) ->
 	uMetrics.addMetrics req.params.email, parseInt(req.body.metrics_id), (err) ->
 		return next err if err
 		res.send 200
 
-### WEBSITE ###
+### WEBSITE VIEWS ###
 
 app.get '/', auth, (req, res) ->
-	res.render 'index'
+	res.render 'index',
 		title: "Metrics"
 		user: req.session.user
 
@@ -149,10 +150,6 @@ app.post '/register', (req, res, next) ->
 app.get '/logout', auth, (req, res, next) ->
 	req.session.valid = false
 	res.redirect '/login'
-
-app.get '/user', auth, (req, res, next) ->
-	console.log req.session
-	res.render 'user', { user: req.session.user }
 
 ###
 app.all '*', (req, res) ->

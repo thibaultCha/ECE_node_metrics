@@ -24,6 +24,15 @@ module.exports =
 			else
 				callback new Error "No matching user for email: #{email}"
 
+	addBatchMetrics: (email, metrics_ids, callback) ->
+		counter = 0
+		for metric_id in metrics_ids
+			@addMetrics email, metric_id, (err) ->
+				return callback err if err
+				counter++
+				if counter is metrics_ids.length
+					callback()
+
 	getMetrics: (email, callback) ->
 		users.get email, (err, fetched_user) ->
 			return callback err if err

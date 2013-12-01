@@ -5,7 +5,7 @@ block head
 
 block content
 
-  h1#email user.email
+  h1#email= user.email
 
   form#form(action="/metrics" method="GET")
     label(for="id") Metric id:
@@ -83,6 +83,6 @@ block content
              graph.append('<span>No metrics for id: '+id+'</span>')
 
           401: (response) ->
-              console.log response
+            graph.append('<span class="error">401 Unauthorized</span>')
         success: ->
             

@@ -14,7 +14,7 @@ Assignment for the Asynchronous Server Technologies course at ECE 2013.
 
 ### Features
 
-- Sign-in/Sign-up process
+- Sign-up/Sign-in process
 - 30 minutes sessions tolerent to server restart
 - Access to a user's metrics if authenticated (and not other users' metrics)
 

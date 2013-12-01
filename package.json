@@ -12,6 +12,7 @@
 		"bcrypt": "*",
 		"connect-level": "*",
 		"stylus": "*",
+		"crypto": "*",
 		"nib": "*"
 	},
 	"devDependencies": {

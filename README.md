@@ -24,6 +24,6 @@ Strictly for personal reasons, here are some of my recent work on Node.js on whi
 
 **[Reminders](https://github.com/thibaultCha/Reminders)**, the small project Mashape gave me to do for an internship position. I think it's really close to this assignment and to the Node.js course. Maybe it can inspire you for the future lessons.
 
-**[Equiprose](http://www.equiprose.org/)**, a static website and blog generator I use for my website. It's fast, customizable and powerful. It uses Jade and Stylus for templating.
+**[Equiprose](http://www.equiprose.org/)**, a static website and blog generator I built for my website. It's fast, customizable and powerful. It uses Jade and Stylus for templating.
 
 **[node-recursive-search](https://github.com/thibaultCha/node-recursive-search)**, you once said that if you have on function that is not on npm, we should make a plugin for that, so this is a function I needed in Equiprose. There is a bigger plugin for objects manipulation too, not published yet.

@@ -30,8 +30,8 @@ module.exports =
 			if fetched_user isnt null
 				metrics_ids = []
 				rs = db.createReadStream
-				  start:"user_metric:#{email}:"
-				  stop:"user_metric:#{email}:"
+				    start:"user_metric:#{email}:"
+				    stop:"user_metric:#{email}:"
 				rs.on 'data', (data) ->
 					[_, user_mail, met_id] = data.key.split ':'
 					if user_mail is email
@@ -39,25 +39,30 @@ module.exports =
 				rs.on 'error', (err) ->
 					return callback err if err
 				rs.on 'close', ->
-					user_metrics = []
-					counter = 0
-					if metrics_ids.length > 0
-						for metric in metrics_ids
-							metrics.get metric, (err, fetched_metrics) ->
-								return callback err if err
-								user_metrics.push
-									id: fetched_metrics[0].id
-									metrics: fetched_metrics
-								counter++
-								if counter is metrics_ids.length
-									callback null, user_metrics
-					else
-						callback null, user_metrics
+					callback null, metrics_ids
 			else
 				callback new Error "No matching user for email: #{email}"
 
+	getDetailedMetrics: (email, callback) ->
+		@getMetrics email, (err, metrics_ids) ->
+			return callback err if err
+			user_metrics = []
+			counter = 0
+			if metrics_ids.length > 0
+				for metric in metrics_ids
+					metrics.get metric, (err, fetched_metrics) ->
+						return callback err if err
+						user_metrics.push
+							id: fetched_metrics[0].id
+							metrics: fetched_metrics
+						counter++
+						if counter is metrics_ids.length
+							callback null, user_metrics
+			else
+				callback null, user_metrics
+
 	removeMetrics: (email, metric_id, callback) ->
-		@getMetrics email, (err, metrics) ->
+		@getDetailedMetrics email, (err, metrics) ->
 			return callback err if err
 			if metrics.length > 0
 				rs = db.createReadStream

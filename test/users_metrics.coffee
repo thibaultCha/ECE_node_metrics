@@ -36,13 +36,11 @@ describe 'users_metrics', ->
 							return next err if err
 							uMetrics.addMetrics user.email, 4, (err) ->
 								return next err if err	
-								uMetrics.getMetrics user.email, (err, user_metrics) ->
+								uMetrics.getMetrics user.email, (err, metrics_ids) ->
 									return next err if err
-									user_metrics.should.be.an.instanceOf(Array)
-									user_metrics.length.should.equal 2
-									user_metrics[0].id.should.equal 4
-									user_metrics[0].metrics.should.be.an.instanceOf(Array)
-									user_metrics[0].metrics[0].value.should.be.equal 1234
+									metrics_ids.should.be.an.instanceOf(Array)
+									metrics_ids.length.should.equal 2
+									metrics_ids[0].should.equal 3
 									next()
 
 		it 'should return an error if user does not exist', (next) ->
@@ -63,7 +61,36 @@ describe 'users_metrics', ->
 					err.should.not.be.null
 					next()
 
-	describe 'getMetrics()', ->
+	describe 'getDetailedMetrics()', ->
+
+		it 'should return detailed metrics', (next) ->
+			user =
+				email: "detailedget@domain.com"
+
+			met = [
+				timestamp:(new Date '2013-11-04 14:00 UTC').getTime(), value:1234
+			,
+				timestamp:(new Date '2013-11-04 14:10 UTC').getTime(), value:5678
+			]
+
+			metrics.save 3, met, (err) ->
+				return next err if err
+				metrics.save 4, met, (err) ->
+					return next err if err
+					users.save user, (err) ->
+						return next err if err
+						uMetrics.addMetrics user.email, 3, (err) ->
+							return next err if err
+							uMetrics.addMetrics user.email, 4, (err) ->
+								return next err if err	
+								uMetrics.getDetailedMetrics user.email, (err, user_metrics) ->
+									return next err if err
+									user_metrics.should.be.an.instanceOf(Array)
+									user_metrics.length.should.equal 2
+									user_metrics[0].id.should.equal 4
+									user_metrics[0].metrics.should.be.an.instanceOf(Array)
+									user_metrics[0].metrics[0].value.should.be.equal 1234
+									next()
 
 		it 'should return an empty array if no metrics for id', (next) ->
 			user = 
@@ -71,7 +98,7 @@ describe 'users_metrics', ->
 
 			users.save user, (err) ->
 				return next err if err
-				uMetrics.getMetrics user.email, (err, user_metrics) ->
+				uMetrics.getDetailedMetrics user.email, (err, user_metrics) ->
 					return next err if err
 					user_metrics.should.be.an.instanceOf(Array)
 					user_metrics.length.should.equal 0
@@ -81,7 +108,7 @@ describe 'users_metrics', ->
 			user =
 				email: "getwrong@domain.com"
 
-			uMetrics.getMetrics user.email, (err) ->
+			uMetrics.getDetailedMetrics user.email, (err) ->
 				err.should.not.be.null
 				next()
 
@@ -121,14 +148,14 @@ describe 'users_metrics', ->
 					return next err if err
 					uMetrics.addMetrics user.email, 1, (err) ->
 						return next err if err
-						uMetrics.getMetrics user.email, (err, user_metrics) ->
+						uMetrics.getDetailedMetrics user.email, (err, user_metrics) ->
 							return next err if err
 							user_metrics.should.be.an.instanceOf(Array)
 							user_metrics.length.should.equal 1
 							user_metrics[0].metrics[0].value.should.equal 1234
 							uMetrics.removeMetrics user.email, 1, (err) ->
 								return next err if err
-								uMetrics.getMetrics user.email, (err, final_metrics) ->
+								uMetrics.getDetailedMetrics user.email, (err, final_metrics) ->
 									return next err if err
 									final_metrics.length.should.be.equal 0
 									next()

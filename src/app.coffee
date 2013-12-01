@@ -25,8 +25,9 @@ app.use express.bodyParser()
 app.use express.methodOverride()
 app.use express.cookieParser 'abcd'
 app.use express.session
-	store: new LevelStore()
-	secret: 'abcd'
+  store: new LevelStore
+    path: 'db/sessions'
+  secret:'abcd'
 app.use app.router
 app.use stylus.middleware "#{__dirname}/../public"
 app.use express.static "#{__dirname}/../public"
@@ -34,6 +35,11 @@ app.use express.errorHandler
 	showStack: true
 	dumpException: true
 
+auth = (req, res, next) ->
+	if req.session.valid is true
+		next()
+	else
+		res.redirect '/login'
 
 ### REST API ###
 
@@ -77,6 +83,10 @@ app.get '/users/:email.json', (req, res, next) ->
 		else
 			res.send 404
 
+app.get '/users/:email/:id.json', auth, (req, res, next) ->
+	uMetrics.get req.params.email, (err, fetched_metrics) ->
+		
+
 app.delete '/users/:email.json', (req, res, next) ->
 	users.delete req.params.email, (err, success) ->
 		return next err if err
@@ -95,19 +105,10 @@ app.post '/users/:email/metrics.json', (req, res, next) ->
 		return next err if err
 		res.send 200
 
-###
-app.post '/users/:email/metrics/:id', (req, res, next) ->
-	uMetrics.addMetrics req.params.email, req.params.id, (err) ->
-		return next err if err
-		res.send 200
-###
 ### WEBSITE ###
 
-app.get '/', (req, res) ->
-	if !req.session.valid
-		res.redirect '/login'
-	else
-		res.render 'index', { title: "Metrics" }
+app.get '/', auth, (req, res) ->
+	res.render 'index', { title: "Metrics" }
 
 app.get '/login', (req, res) ->
 	res.render 'login', { title: "Login" }
@@ -137,16 +138,15 @@ app.post '/register', (req, res, next) ->
 		password: req.body.password
 	users.save user, (err, saved_user) ->
 		return next err if err
-		console.log 'user saved'
-		console.log saved_user
 		res.redirect '/login'
 
-app.get '/user', (req, res, next) ->
+app.get '/logout', auth, (req, res, next) ->
+	req.session.valid = false
+	res.redirect '/login'
+
+app.get '/user', auth, (req, res, next) ->
 	console.log req.session
-	if !req.session.valid
-		res.redirect '/login'
-	else
-		res.render 'user', { user: req.session.user }
+	res.render 'user', { user: req.session.user }
 
 ###
 app.all '*', (req, res) ->

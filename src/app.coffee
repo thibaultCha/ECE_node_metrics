@@ -125,8 +125,12 @@ app.get '/', auth, (req, res) ->
 app.get '/login', (req, res) ->
 	res.render 'login', { title: "Login" }
 
-app.post '/login', (req, res) ->
+app.get '/register', (req, res) ->
+	res.render 'register', { title: "Register" }
+
+app.post '/login', (req, res, next) ->
 	users.get req.body.email, (err, user) ->
+		return next err if err
 		if user is null
 			res.send 404
 		else if bcrypt.compareSync(req.body.password, user.password)
@@ -139,9 +143,6 @@ app.post '/login', (req, res) ->
 			res.send 200
 		else
 			res.send 401
-
-app.get '/register', (req, res) ->
-	res.render 'register', { title: "Register" }
 
 app.get '/logout', auth, (req, res, next) ->
 	req.session.valid = false

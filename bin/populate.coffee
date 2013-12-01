@@ -59,7 +59,7 @@ exec "rm -rf #{__dirname}/../db/*", (err, stdout) ->
 			throw err if err
 			users.save user, (err) ->
 				throw err if err
-				uMetrics.addBatchMetrics user.email, [1,2], (err) ->
+				uMetrics.addBatchMetrics user.email, met_ids, (err) ->
 					throw err if err
 					console.log "New User"
 					console.log "email: #{user.email}"
@@ -118,7 +118,7 @@ exec "rm -rf #{__dirname}/../db/*", (err, stdout) ->
 							throw err if err
 							users.save user, (err) ->
 								throw err if err
-								uMetrics.addBatchMetrics user.email, [3,4], (err) ->
+								uMetrics.addBatchMetrics user.email, met_ids, (err) ->
 									throw err if err
 									console.log "New User"
 									console.log "email: #{user.email}"

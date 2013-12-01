@@ -84,5 +84,8 @@ block content
 
           401: (response) ->
             graph.append('<span class="error">401 Unauthorized</span>')
-        success: ->
+
+        error: (xhr) ->
+          if xhr.status is 0
+            graph.append('<span class="error">Server not reachable</span>')
             

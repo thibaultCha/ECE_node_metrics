@@ -48,7 +48,6 @@ metric_get = (req, res, next) ->
 		else
 			res.send 404
 app.get '/metrics/:id.json', metric_get
-
 app.get '/metrics?metric=:id', metric_get
 
 app.post '/metrics/:id.json', (req, res, next) ->
@@ -65,6 +64,7 @@ app.delete '/metrics/:id.json', (req, res, next) ->
 			res.send 404
 
 # Users
+# To use in production
 auth = (req, res, next) ->
 	if req.session.valid is true
 		next()

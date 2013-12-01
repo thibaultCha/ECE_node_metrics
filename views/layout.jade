@@ -12,10 +12,12 @@ html(lang="en")
       ul.links
         li
           a(href="/") metrics
-        li
-          a(href="/login") login
-        li
-          a(href="/logout") logout
+        unless user
+          li
+            a(href="/login") login
+        if user
+          li
+            a(href="/logout") logout
     .container
       block content
 

@@ -33,13 +33,17 @@ module.exports =
 		ws.end()
 
 	delete: (id, callback) ->
+		found = false
 		rs = db.createReadStream
 			start:"metric:#{id}:"
 			stop:"metric:#{id}:"
 		rs.on 'data', (data) ->
-			db.del data.key, (err) ->
-				return callback err if err
+			[_, met_id, timestamp] = data.key.split ':'
+			if parseInt(met_id) is parseInt(id)
+				found = true
+				db.del data.key, (err) ->
+					return callback err if err
 		rs.on 'error', (err) ->
 			return callback err if err
 		rs.on 'close', ->
-			callback()
+			callback(null, found)

@@ -75,12 +75,12 @@ describe 'users', ->
 						(user == null).should.be.true
 						next()
 
-		it 'should return an error if user does not exist', (next) ->
+		it 'should callback false if user does not exist', (next) ->
 			user =
 				email: "wrong@domain.com"			
 
-			users.delete user.email, (err) ->
-				err.should.not.be.null
+			users.delete user.email, (err, success) ->
+				success.should.equal false
 				next()
 
 	after (next) ->

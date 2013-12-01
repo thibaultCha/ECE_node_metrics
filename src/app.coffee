@@ -56,9 +56,12 @@ app.post '/metrics/:id.json', (req, res, next) ->
 		metric_get req, res, next
 
 app.delete '/metrics/:id.json', (req, res, next) ->
-	metrics.delete req.params.id, (err) ->
+	metrics.delete req.params.id, (err, success) ->
 		return next err if err
-		res.send 200
+		if success
+			res.send 200
+		else
+			res.send 404
 
 # Users
 app.post '/users.json', (req, res, next) ->
@@ -69,12 +72,29 @@ app.post '/users.json', (req, res, next) ->
 app.get '/users/:email.json', (req, res, next) ->
 	users.get req.params.email, (err, fetched_user) ->
 		return next err if err
-		res.json fetched_user
+		if fetched_user isnt null
+			res.json fetched_user
+		else
+			res.send 404
 
 app.delete '/users/:email.json', (req, res, next) ->
-	users.delete req.params.email, (err) ->
+	users.delete req.params.email, (err, success) ->
+		return next err if err
+		if success
+			res.send 200
+		else
+			res.send 404
+
+app.get '/users/:email/metrics.json', (req, res, next) ->
+	uMetrics.getMetrics req.params.email, (err, user_metrics) ->
+		return next err if err
+		res.json user_metrics
+
+app.post '/users/:email/metrics.json', (req, res, next) ->
+	uMetrics.addMetrics req.params.email, parseInt(req.body.metrics_id), (err) ->
 		return next err if err
 		res.send 200
+
 ###
 app.post '/users/:email/metrics/:id', (req, res, next) ->
 	uMetrics.addMetrics req.params.email, req.params.id, (err) ->

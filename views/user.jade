@@ -9,5 +9,12 @@ block content
   :coffee
 
     $(document).ready(->
-        
+      $.ajax "/users/email/metrics.json",
+      type: "GET",
+      data: {},
+      statusCode:
+        200: (response) ->
+
+        404: (response) ->
+
     )

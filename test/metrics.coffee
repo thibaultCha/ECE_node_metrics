@@ -6,7 +6,7 @@ describe 'metrics', ->
 
 	before (next) ->
 		exec "rm -rf #{__dirname}/../db/metrics && mkdir #{__dirname}/../db/metrics", (err, stdout) ->
-			throw err if err
+			return next err if err
 			metrics = require '../lib/metrics'
 			next()
 
@@ -56,15 +56,17 @@ describe 'metrics', ->
 			timestamp:(new Date '2013-11-04 14:11 UTC').getTime(), value:789
 		]
 
-		metrics.save 2, met, (err) ->
-			throw err if err
-			metrics.delete 2, (err) ->
-				throw err if err
-				metrics.get 2, (err, metrics) ->
+		metrics.save 12, met, (err) ->
+			return next err if err
+			metrics.delete 12, (err, success) ->
+				return next err if err
+				success.should.equal true
+				metrics.get 12, (err, metrics) ->
+					return next err if err
 					metrics.length.should.equal 0
 					next()
 
 	after (next) ->
 		exec "rm -rf #{__dirname}/../db/metrics", (err, stdout) ->
-			throw err if err
+			return next err if err
 			next()

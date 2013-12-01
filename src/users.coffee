@@ -39,15 +39,17 @@ module.exports =
 				callback new Error "User with email: #{user.email} already exists"
 
 	delete: (email, callback) ->
-		exists = false
+		found = false
 		rs = db.createReadStream
 			start:"user:#{email}"
 			stop:"user:#{email}"
 		rs.on 'data', (data) ->
-			exists = true
-			db.del data.key, (err) ->
-				return callback err if err
+			[_, user_email] = data.key.split ':'
+			if user_email is email
+				found = true
+				db.del data.key, (err) ->
+					return callback err if err
 		rs.on 'error', (err) ->
 			return callback err if err
 		rs.on 'close', ->
-			callback(if exists then null else new Error "No user for email #{email}")
+			callback(null, found)

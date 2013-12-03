@@ -2,6 +2,9 @@
 
 Assignment for the Asynchronous Server Technologies course at ECE 2013.
 
+- Guillaume Naudin
+- Thibault Charbonnier
+
 ### Usage
 
 1. `npm install`
@@ -18,9 +21,9 @@ Assignment for the Asynchronous Server Technologies course at ECE 2013.
 - 30 minutes sessions tolerent to server restart
 - Access to a user's metrics if authenticated (and not other users' metrics)
 
-### Other personal work with Node.js
+### Other personal work with Node.js (Thibault)
 
-Strictly for personal reasons, here are some of my recent work on Node.js on which I think you might be interested to have a look:
+On a strictly personal plan, here are some of my recent work on Node.js on which I think you might be interested to have a look:
 
 **[Reminders](https://github.com/thibaultCha/Reminders)**, the small project Mashape gave me to do for an internship position. I think it's really close to this assignment and to the Node.js course. Maybe it can inspire you for the future lessons. Full description of the features is in the readme.
 

@@ -1,9 +1,11 @@
-# ECE Metrics
+## ECE Metrics
 
-Assignment for the Asynchronous Server Technologies course at ECE 2013.
+Assignment for the **Asynchronous Server Technologies** course at ECE 2013.
 
-- Guillaume Naudin
-- Thibault Charbonnier
+```
+Guillaume Naudin
+Thibault Charbonnier
+```
 
 ### Usage
 
@@ -16,18 +18,9 @@ Assignment for the Asynchronous Server Technologies course at ECE 2013.
 4. `make test` run the tests
 
 ### Features
+As required by the assignment:
 
-- Sign-up/Sign-in process
-- 30 minutes sessions tolerent to server restart
-- Access to a user's metrics if authenticated (and not other users' metrics)
-- Full test suite
-
-### Other personal work with Node.js (Thibault)
-
-On a strictly personal plan, here are some of my recent work on Node.js on which I think you might be interested to have a look:
-
-**[Reminders](https://github.com/thibaultCha/Reminders)**, the small project Mashape gave me to do for an internship position. I think it's really close to this assignment and to the Node.js course. Maybe it can inspire you for the future lessons. Full description of the features is in the readme.
-
-**[Equiprose](http://www.equiprose.org/)**, a static website and blog generator I built for my website. It's fast, customizable and powerful. It uses Jade and Stylus for templating.
-
-**[node-recursive-search](https://github.com/thibaultCha/node-recursive-search)**, you once said that if we have a function that is not on npm, we should make a plugin for that, so this is a function I needed in Equiprose. There is a bigger plugin for objects manipulation too, not published yet.
+- [x] Sign-up/Sign-in process
+- [x] 30 minutes sessions tolerent to server restart
+- [x] Access to a user's metrics if authenticated (and not other users' metrics)
+- [x] Full test suite
